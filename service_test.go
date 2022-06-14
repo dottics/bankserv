@@ -21,14 +21,14 @@ func TestNewService(t *testing.T) {
 	}
 	token := "my-test-token"
 	ms := NewService(token)
-	if ms.URL.Scheme != scheme {
+	if ms.serv.URL.Scheme != scheme {
 		t.Errorf("expected Bank Service to have Scheme %s got %s",
-			scheme, ms.URL.Scheme,
+			scheme, ms.serv.URL.Scheme,
 		)
 	}
-	if ms.URL.Host != host {
+	if ms.serv.URL.Host != host {
 		t.Errorf("expected Bank Service to have Host %s got %s",
-			host, ms.URL.Host,
+			host, ms.serv.URL.Host,
 		)
 	}
 }

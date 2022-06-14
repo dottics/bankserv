@@ -13,6 +13,7 @@ type Bank struct {
 	CreateDate time.Time `json:"create_date"`
 	UpdateDate time.Time `json:"update_date"`
 }
+type Banks []Bank
 
 type Tag struct {
 	UUID       uuid.UUID `json:"uuid"`
@@ -21,6 +22,7 @@ type Tag struct {
 	CreateDate time.Time `json:"create_date"`
 	UpdateDate time.Time `json:"update_date"`
 }
+type Tags []Tag
 
 type Item struct {
 	UUID            uuid.UUID `json:"uuid"`
@@ -34,6 +36,7 @@ type Item struct {
 	CreateDate      time.Time `json:"create_date"`
 	UpdateDate      time.Time `json:"update_date"`
 }
+type Items []Item
 
 type Transaction struct {
 	UUID            uuid.UUID `json:"uuid"`
@@ -45,6 +48,7 @@ type Transaction struct {
 	CreateDate      time.Time `json:"create_date"`
 	UpdateDate      time.Time `json:"update_date"`
 }
+type Transactions []Transaction
 
 type BankAccount struct {
 	UUID             uuid.UUID     `json:"uuid"`
@@ -55,4 +59,14 @@ type BankAccount struct {
 	Active           bool          `json:"active"`
 	CreateDate       time.Time     `json:"create_date"`
 	UpdateDate       time.Time     `json:"update_date"`
+}
+type BankAccounts []BankAccount
+
+// timeMustParse is a function the parses a time string formatted based on the
+// RFC3339 standard as 2006-01-02T15:04:05Z07:00 to a time.Time and returns
+// the time.
+func timeMustParse(value string) time.Time {
+	// time.RFC3339 == "2006-01-02T15:04:05Z07:00"
+	t, _ := time.Parse(time.RFC3339, value)
+	return t
 }
