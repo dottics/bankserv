@@ -3,6 +3,7 @@ package bankserv
 import (
 	"github.com/dottics/dutil"
 	"github.com/google/uuid"
+	"net/url"
 )
 
 // GetUserBankAccounts gets all the bank accounts for a specific user based on
@@ -10,7 +11,41 @@ import (
 // If an error occurs such as the user not found then an empty slice is returned
 // and an error.
 func (s *Service) GetUserBankAccounts(UUID uuid.UUID) (BankAccounts, dutil.Error) {
-	return BankAccounts{}, nil
+	// set path
+	s.serv.URL.Path = "/bank-account/user/-"
+	// add query string
+	qs := url.Values{"uuid": {UUID.String()}}
+	s.serv.URL.RawQuery = qs.Encode()
+	// do request
+	r, e := s.serv.NewRequest("GET", s.serv.URL.String(), nil, nil)
+	if e != nil {
+		return BankAccounts{}, e
+	}
+
+	// response structure
+	type Data struct {
+		BankAccounts `json:"bank_accounts"`
+	}
+	res := struct {
+		Data   `json:"data"`
+		Errors map[string][]string `json:"errors"`
+	}{}
+
+	// decode the response
+	_, e = s.serv.Decode(r, &res)
+	if e != nil {
+		return BankAccounts{}, e
+	}
+
+	if r.StatusCode != 200 {
+		e := &dutil.Err{
+			Status: r.StatusCode,
+			Errors: res.Errors,
+		}
+		return BankAccounts{}, e
+	}
+	// return bank accounts on successful
+	return res.BankAccounts, nil
 }
 
 // GetOrganisationBankAccounts gets all the bank accounts for a specific

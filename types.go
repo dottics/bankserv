@@ -51,14 +51,13 @@ type Transaction struct {
 type Transactions []Transaction
 
 type BankAccount struct {
-	UUID             uuid.UUID     `json:"uuid"`
-	UserUUID         uuid.UUID     `json:"user_uuid"`
-	OrganisationUUID uuid.UUID     `json:"organisation_uuid"`
-	AccountNumber    string        `json:"account_number"`
-	Transactions     []Transaction `json:"transactions"`
-	Active           bool          `json:"active"`
-	CreateDate       time.Time     `json:"create_date"`
-	UpdateDate       time.Time     `json:"update_date"`
+	UUID             uuid.UUID `json:"uuid"`
+	UserUUID         uuid.UUID `json:"user_uuid"`
+	OrganisationUUID uuid.UUID `json:"organisation_uuid"`
+	AccountNumber    string    `json:"account_number"`
+	Active           bool      `json:"active"`
+	CreateDate       time.Time `json:"create_date"`
+	UpdateDate       time.Time `json:"update_date"`
 }
 type BankAccounts []BankAccount
 
