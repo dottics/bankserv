@@ -132,7 +132,41 @@ func (s *Service) CreateBankAccount(b BankAccount) (BankAccount, dutil.Error) {
 
 // UpdateBankAccount updates a specific bank account's data.
 func (s *Service) UpdateBankAccount(b BankAccount) (BankAccount, dutil.Error) {
-	return BankAccount{}, nil
+	// set path
+	s.serv.URL.Path = "/bank-account/-"
+	// marshal payload reader
+	p, e := dutil.MarshalReader(b)
+	if e != nil {
+		return BankAccount{}, e
+	}
+	// do request
+	r, e := s.serv.NewRequest("PUT", s.serv.URL.String(), nil, p)
+	if e != nil {
+		return BankAccount{}, e
+	}
+
+	type Data struct {
+		BankAccount `json:"bank_account"`
+	}
+	res := struct {
+		Data   `json:"data"`
+		Errors map[string][]string `json:"errors"`
+	}{}
+	// decode response
+	_, e = s.serv.Decode(r, &res)
+	if e != nil {
+		return BankAccount{}, e
+	}
+
+	if r.StatusCode != 200 {
+		e := &dutil.Err{
+			Status: r.StatusCode,
+			Errors: res.Errors,
+		}
+		return BankAccount{}, e
+	}
+	// return bank account on successful
+	return res.Data.BankAccount, nil
 }
 
 // DeleteBankAccount deletes a specific bank account's data.

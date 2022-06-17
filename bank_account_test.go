@@ -367,5 +367,65 @@ func TestService_CreateBankAccount(t *testing.T) {
 }
 
 func TestService_UpdateBankAccount(t *testing.T) {
-	
+	tt := []struct {
+		name         string
+		bankAccount  BankAccount // payload data
+		exchange     *microtest.Exchange
+		eBankAccount BankAccount // expected bank account
+		e            dutil.Error
+	}{
+		{
+			name:        "permission required",
+			bankAccount: userBankAccount,
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 403,
+					Body:   `{"message":"","data":{},"errors":{"permission":["Please ensure you have permission"]}}`,
+				},
+			},
+			eBankAccount: BankAccount{},
+			e: &dutil.Err{
+				Errors: map[string][]string{
+					"permission": {"Please ensure you have permission"},
+				},
+			},
+		},
+		{
+			name:        "update bank account",
+			bankAccount: organisationBankAccount,
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 200,
+					Body:   `{"message":"bank account create","data":{"bank_account":{"uuid":"e6b7f986-307c-4147-a34e-f924790799bb","user_uuid":null,"organisation_uuid":"e4bd194d-41e7-4f27-a4a8-161685a9b8b8","account_number":"098765432109","active":true,"create_date":"2022-06-17T22:16:12.000Z","update_date":"2022-06-17T22:16:12.000Z"}},"errors":{}}`,
+				},
+			},
+			eBankAccount: BankAccount{
+				UUID:             uuid.MustParse("e6b7f986-307c-4147-a34e-f924790799bb"),
+				OrganisationUUID: uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
+				UserUUID:         uuid.UUID{},
+				AccountNumber:    "098765432109",
+				Active:           true,
+				CreateDate:       timeMustParse("2022-06-17T22:16:12.000Z"),
+				UpdateDate:       timeMustParse("2022-06-17T22:16:12.000Z"),
+			},
+		},
+	}
+
+	s := NewService("")
+	ms := microtest.MockServer(s.serv)
+
+	for i, tc := range tt {
+		name := fmt.Sprintf("%d %s", i, tc.name)
+		t.Run(name, func(t *testing.T) {
+			ms.Append(tc.exchange)
+
+			b, e := s.UpdateBankAccount(tc.bankAccount)
+			if !dutil.ErrorEqual(tc.e, e) {
+				t.Errorf("expected error %v got %v", tc.e, e)
+			}
+			if b != tc.eBankAccount {
+				t.Errorf("expected bank account %v got %v", tc.eBankAccount, b)
+			}
+		})
+	}
 }
