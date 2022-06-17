@@ -429,3 +429,53 @@ func TestService_UpdateBankAccount(t *testing.T) {
 		})
 	}
 }
+
+func TestService_DeleteBankAccount(t *testing.T) {
+	tt := []struct {
+		name     string
+		exchange *microtest.Exchange
+		UUID     uuid.UUID
+		e        dutil.Error
+	}{
+		{
+			name: "permission required",
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 403,
+					Body:   `{"message":"","data":{},"errors":{"permission":["Please ensure you have permission"]}}`,
+				},
+			},
+			e: &dutil.Err{
+				Errors: map[string][]string{
+					"permission": {"Please ensure you have permission"},
+				},
+			},
+		},
+		{
+			name: "delete bank account",
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 200,
+					Body:   `{"message":"bank account deleted","data":{},"errors":{}}`,
+				},
+			},
+			e: nil,
+		},
+	}
+
+	s := NewService("")
+	ms := microtest.MockServer(s.serv)
+
+	for i, tc := range tt {
+		name := fmt.Sprintf("%d %s", i, tc.name)
+		UUID := uuid.MustParse("e6b7f986-307c-4147-a34e-f924790799bb")
+		t.Run(name, func(t *testing.T) {
+			ms.Append(tc.exchange)
+
+			e := s.DeleteBankAccount(UUID)
+			if !dutil.ErrorEqual(tc.e, e) {
+				t.Errorf("expected error %v got %v", tc.e, e)
+			}
+		})
+	}
+}

@@ -171,5 +171,33 @@ func (s *Service) UpdateBankAccount(b BankAccount) (BankAccount, dutil.Error) {
 
 // DeleteBankAccount deletes a specific bank account's data.
 func (s *Service) DeleteBankAccount(UUID uuid.UUID) dutil.Error {
+	// set path
+	s.serv.URL.Path = "/bank-account/-"
+	qs := url.Values{"uuid": {UUID.String()}}
+	s.serv.URL.RawQuery = qs.Encode()
+
+	// do request
+	r, e := s.serv.NewRequest("DELETE", s.serv.URL.String(), nil, nil)
+	if e != nil {
+		return e
+	}
+
+	res := struct {
+		Errors map[string][]string `json:"errors"`
+	}{}
+
+	// decode the response
+	_, e = s.serv.Decode(r, &res)
+	if e != nil {
+		return e
+	}
+
+	if r.StatusCode != 200 {
+		e := &dutil.Err{
+			Status: r.StatusCode,
+			Errors: res.Errors,
+		}
+		return e
+	}
 	return nil
 }
