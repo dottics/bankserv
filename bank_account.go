@@ -45,7 +45,7 @@ func (s *Service) GetUserBankAccounts(UUID uuid.UUID) (BankAccounts, dutil.Error
 		return BankAccounts{}, e
 	}
 	// return bank accounts on successful
-	return res.BankAccounts, nil
+	return res.Data.BankAccounts, nil
 }
 
 // GetOrganisationBankAccounts gets all the bank accounts for a specific
@@ -85,18 +85,53 @@ func (s *Service) GetOrganisationBankAccounts(UUID uuid.UUID) (BankAccounts, dut
 		return BankAccounts{}, e
 	}
 	// return the bank accounts on successful
-	return res.BankAccounts, nil
+	return res.Data.BankAccounts, nil
 }
 
 // CreateBankAccount creates a new bank account for either the user or
 // organisation based on which UUID is provided. After creating the bank account
 // it returns the bank account, or if an error occurs an error is returned.
-func (s *Service) CreateBankAccount() (BankAccount, dutil.Error) {
-	return BankAccount{}, nil
+func (s *Service) CreateBankAccount(b BankAccount) (BankAccount, dutil.Error) {
+	// set path
+	s.serv.URL.Path = "/bank-account"
+	// marshal data to payload reader
+	p, e := dutil.MarshalReader(b)
+	if e != nil {
+		return BankAccount{}, e
+	}
+
+	// do request
+	r, e := s.serv.NewRequest("POST", s.serv.URL.String(), nil, p)
+	if e != nil {
+		return BankAccount{}, e
+	}
+
+	type Data struct {
+		BankAccount `json:"bank_account"`
+	}
+	res := struct {
+		Data   `json:"data"`
+		Errors map[string][]string
+	}{}
+	// decode the response
+	_, e = s.serv.Decode(r, &res)
+	if e != nil {
+		return BankAccount{}, e
+	}
+
+	if r.StatusCode != 201 {
+		e := &dutil.Err{
+			Status: r.StatusCode,
+			Errors: res.Errors,
+		}
+		return BankAccount{}, e
+	}
+	// return bank account on successful
+	return res.Data.BankAccount, nil
 }
 
 // UpdateBankAccount updates a specific bank account's data.
-func (s *Service) UpdateBankAccount() (BankAccount, dutil.Error) {
+func (s *Service) UpdateBankAccount(b BankAccount) (BankAccount, dutil.Error) {
 	return BankAccount{}, nil
 }
 
