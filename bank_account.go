@@ -52,7 +52,40 @@ func (s *Service) GetUserBankAccounts(UUID uuid.UUID) (BankAccounts, dutil.Error
 // organisation based on the organisation's UUID and returns a slice of
 // BankAccount. If error occurs an error is returned.
 func (s *Service) GetOrganisationBankAccounts(UUID uuid.UUID) (BankAccounts, dutil.Error) {
-	return BankAccounts{}, nil
+	// set path
+	s.serv.URL.Path = "/bank-account/organisation/-"
+	// set query string
+	qs := url.Values{"uuid": {UUID.String()}}
+	s.serv.URL.RawQuery = qs.Encode()
+	// do request
+	r, e := s.serv.NewRequest("GET", s.serv.URL.String(), nil, nil)
+	if e != nil {
+		return BankAccounts{}, e
+	}
+
+	type Data struct {
+		BankAccounts `json:"bank_accounts"`
+	}
+	res := struct {
+		Data   `json:"data"`
+		Errors map[string][]string
+	}{}
+
+	// decode the response
+	_, e = s.serv.Decode(r, &res)
+	if e != nil {
+		return BankAccounts{}, e
+	}
+
+	if r.StatusCode != 200 {
+		e := &dutil.Err{
+			Status: r.StatusCode,
+			Errors: res.Errors,
+		}
+		return BankAccounts{}, e
+	}
+	// return the bank accounts on successful
+	return res.BankAccounts, nil
 }
 
 // CreateBankAccount creates a new bank account for either the user or
