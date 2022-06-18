@@ -116,10 +116,79 @@ func TestService_GetBankAccountTransactions(t *testing.T) {
 
 func TestService_CreateTransaction(t *testing.T) {
 	tt := []struct {
-		name     string
-		exchange *microtest.Exchange
+		name         string
+		transaction  Transaction
+		exchange     *microtest.Exchange
+		ETransaction Transaction
+		e            dutil.Error
 	}{
-		{},
+		{
+			name: "permission required",
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 403,
+					Body:   `{"message":"Forbidden: Unable to process request","data":{},"errors":{"permission":["Please ensure you have permission"]}}`,
+				},
+			},
+			transaction: Transaction{
+				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
+				Description: "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
+			},
+			ETransaction: Transaction{},
+			e: &dutil.Err{
+				Status: 403,
+				Errors: map[string][]string{
+					"permission": {"Please ensure you have permission"},
+				},
+			},
+		},
+		{
+			name: "bad request",
+			transaction: Transaction{
+				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
+				Description: "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
+			},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 400,
+					Body:   `{"message":"BadRequest: Unable to process request","data":{},"errors":{"uuid":["required field"]}}`,
+				},
+			},
+			ETransaction: Transaction{},
+			e: &dutil.Err{
+				Status: 400,
+				Errors: map[string][]string{
+					"uuid": {"required field"},
+				},
+			},
+		},
+		{
+			name: "create transaction",
+			transaction: Transaction{
+				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
+				Description: "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
+			},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 201,
+					Body:   `{"message":"transaction created","data":{"transaction":{"uuid":"e4bd194d-41e7-4f27-a4a8-161685a9b8b8","bank_account_uuid":"032203af-6002-4abc-9982-73c577add8df","date":"2022-06-18T15:26:22Z","description":"SUPERSPAR JEFFREYS BAYEASTERN CAPEZA","items":[],"active":true,"create_date":"2022-06-18T15:49:58Z","update_date":"2022-06-18T15:50:06Z"}},"errors":{}}`,
+				},
+			},
+			ETransaction: Transaction{
+				UUID:        uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
+				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
+				Description: "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
+				Active:      true,
+				CreateDate:  timeMustParse("2022-06-18T15:49:58.000Z"),
+				UpdateDate:  timeMustParse("2022-06-18T15:50:06.000Z"),
+				Items:       Items{},
+			},
+			e: nil,
+		},
 	}
 
 	s := NewService("")
@@ -129,6 +198,14 @@ func TestService_CreateTransaction(t *testing.T) {
 		name := fmt.Sprintf("%d %s", i, tc.name)
 		t.Run(name, func(t *testing.T) {
 			ms.Append(tc.exchange)
+
+			txn, e := s.CreateTransaction(tc.transaction)
+			if !dutil.ErrorEqual(tc.e, e) {
+				t.Errorf("expected error %v got %v", tc.e, e)
+			}
+			if !EqualTransaction(tc.ETransaction, txn) {
+				t.Errorf("expected transaction %v got %v", tc.ETransaction, txn)
+			}
 		})
 	}
 }

@@ -47,7 +47,41 @@ func (s *Service) GetBankAccountTransactions(UUID uuid.UUID) (Transactions, duti
 // CreateTransaction creates a new transaction for a bank account based on the
 // transaction data that is passed to the function.
 func (s *Service) CreateTransaction(t Transaction) (Transaction, dutil.Error) {
-	return Transaction{}, nil
+	// set path
+	s.serv.URL.Path = "/transaction"
+	// marshal payload
+	p, e := dutil.MarshalReader(t)
+	if e != nil {
+		return Transaction{}, e
+	}
+	// do request
+	r, e := s.serv.NewRequest("POST", s.serv.URL.String(), nil, p)
+	if e != nil {
+		return Transaction{}, e
+	}
+
+	type Data struct {
+		Transaction `json:"transaction"`
+	}
+	res := struct {
+		Data   `json:"data"`
+		Errors dutil.Errors `json:"errors"`
+	}{}
+	// decode response
+	_, e = s.serv.Decode(r, &res)
+	if e != nil {
+		return Transaction{}, e
+	}
+
+	if r.StatusCode != 201 {
+		e := &dutil.Err{
+			Status: r.StatusCode,
+			Errors: res.Errors,
+		}
+		return Transaction{}, e
+	}
+	// return transaction on successful exchange
+	return res.Data.Transaction, nil
 }
 
 // UpdateTransaction updates a transaction for a bank account based on the
