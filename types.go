@@ -39,14 +39,14 @@ type Item struct {
 type Items []Item
 
 type Transaction struct {
-	UUID            uuid.UUID `json:"uuid"`
-	BankAccountUUID uuid.UUID `json:"bank_account_uuid"`
-	Date            time.Time `json:"date"`
-	Description     string    `json:"description"`
-	Items           []Item    `json:"items"`
-	Active          bool      `json:"active"`
-	CreateDate      time.Time `json:"create_date"`
-	UpdateDate      time.Time `json:"update_date"`
+	UUID        uuid.UUID `json:"uuid"`
+	AccountUUID uuid.UUID `json:"bank_account_uuid"`
+	Date        time.Time `json:"date"`
+	Description string    `json:"description"`
+	Items       []Item    `json:"items"`
+	Active      bool      `json:"active"`
+	CreateDate  time.Time `json:"create_date"`
+	UpdateDate  time.Time `json:"update_date"`
 }
 type Transactions []Transaction
 
