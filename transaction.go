@@ -87,7 +87,39 @@ func (s *Service) CreateTransaction(t Transaction) (Transaction, dutil.Error) {
 // UpdateTransaction updates a transaction for a bank account based on the
 // transaction's UUID and transaction data that is passed to the function.
 func (s *Service) UpdateTransaction(t Transaction) (Transaction, dutil.Error) {
-	return Transaction{}, nil
+	// set path
+	s.serv.URL.Path = "/transaction/-"
+	// read payload
+	p, e := dutil.MarshalReader(t)
+	if e != nil {
+		return Transaction{}, e
+	}
+
+	// do request
+	r, e := s.serv.NewRequest("PUT", s.serv.URL.String(), nil, p)
+
+	type Data struct {
+		Transaction `json:"transaction"`
+	}
+	res := struct {
+		Data   `json:"data"`
+		Errors dutil.Errors `json:"errors"`
+	}{}
+	// decode response
+	_, e = s.serv.Decode(r, &res)
+	if e != nil {
+		return Transaction{}, e
+	}
+
+	if r.StatusCode != 200 {
+		e := &dutil.Err{
+			Status: r.StatusCode,
+			Errors: res.Errors,
+		}
+		return Transaction{}, e
+	}
+
+	return res.Data.Transaction, nil
 }
 
 // DeleteTransaction deletes a specific transaction from a bank account. It only

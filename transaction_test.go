@@ -212,10 +212,75 @@ func TestService_CreateTransaction(t *testing.T) {
 
 func TestService_UpdateTransaction(t *testing.T) {
 	tt := []struct {
-		name     string
-		exchange *microtest.Exchange
+		name         string
+		transaction  Transaction
+		exchange     *microtest.Exchange
+		ETransaction Transaction
+		e            dutil.Error
 	}{
-		{},
+		{
+			name: "permission required",
+			transaction: Transaction{
+				UUID:        uuid.MustParse("7f408ea2-f5e5-4547-8f74-c33fe75c3081"),
+				Description: "UPDATE*TXN#TO#NEW#DESCR",
+				Date:        timeMustParse("2022-06-19T13:27:19.000Z"),
+			},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 403,
+					Body:   `{"message":"Forbidden: Unable to process request","data":{},"errors":{"permission":["Please ensure you have permission"]}}`,
+				},
+			},
+			ETransaction: Transaction{},
+			e: &dutil.Err{
+				Status: 403,
+				Errors: map[string][]string{
+					"permission": {"Please ensure you have permission"},
+				},
+			},
+		},
+		{
+			name:        "bad request",
+			transaction: Transaction{},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 400,
+					Body:   `{"message":"BadRequest: Unable to process request","data":{},"errors":{"uuid":["required field"]}}`,
+				},
+			},
+			ETransaction: Transaction{},
+			e: &dutil.Err{
+				Status: 400,
+				Errors: map[string][]string{
+					"uuid": {"required field"},
+				},
+			},
+		},
+		{
+			name: "update transaction",
+			transaction: Transaction{
+				UUID:        uuid.MustParse("7f408ea2-f5e5-4547-8f74-c33fe75c3081"),
+				Description: "UPDATE*TXN#TO#NEW#DESCR",
+				Date:        timeMustParse("2022-06-19T13:27:19.000Z"),
+			},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 200,
+					Body:   `{"message":"transaction updated","data":{"transaction":{"uuid":"7f408ea2-f5e5-4547-8f74-c33fe75c3081","bank_account_uuid":"6dedbdf5-84ad-435e-8a2f-26d929e18116","date":"2022-06-19T13:27:19Z","description":"UPDATE*TXN#TO#NEW#DESCR","items":[],"active":true,"create_date":"2022-06-18T15:49:58Z","update_date":"2022-06-18T15:50:06Z"}},"errors":{}}`,
+				},
+			},
+			ETransaction: Transaction{
+				UUID:        uuid.MustParse("7f408ea2-f5e5-4547-8f74-c33fe75c3081"),
+				AccountUUID: uuid.MustParse("6dedbdf5-84ad-435e-8a2f-26d929e18116"),
+				Description: "UPDATE*TXN#TO#NEW#DESCR",
+				Date:        timeMustParse("2022-06-19T13:27:19.000Z"),
+				Active:      true,
+				CreateDate:  timeMustParse("2022-06-18T15:49:58.000Z"),
+				UpdateDate:  timeMustParse("2022-06-18T15:50:06.000Z"),
+				Items:       Items{},
+			},
+			e: nil,
+		},
 	}
 
 	s := NewService("")
@@ -225,6 +290,14 @@ func TestService_UpdateTransaction(t *testing.T) {
 		name := fmt.Sprintf("%d %s", i, tc.name)
 		t.Run(name, func(t *testing.T) {
 			ms.Append(tc.exchange)
+
+			tx, e := s.UpdateTransaction(tc.transaction)
+			if !dutil.ErrorEqual(tc.e, e) {
+				t.Errorf("expected error %v got %v", tc.e, e)
+			}
+			if !EqualTransaction(tc.ETransaction, tx) {
+				t.Errorf("expected transaction %v got %v", tc.ETransaction, tx)
+			}
 		})
 	}
 }
