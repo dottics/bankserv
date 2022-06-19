@@ -125,6 +125,34 @@ func (s *Service) UpdateTransaction(t Transaction) (Transaction, dutil.Error) {
 // DeleteTransaction deletes a specific transaction from a bank account. It only
 // returns an error if an error has occurred, otherwise it will return nil if
 // transaction has successfully been deleted.
-func (s *Service) DeleteTransaction() dutil.Error {
+func (s *Service) DeleteTransaction(UUID uuid.UUID) dutil.Error {
+	// set path
+	s.serv.URL.Path = "/transaction/-"
+	// set query string
+	qs := url.Values{"uuid": {UUID.String()}}
+	s.serv.URL.RawQuery = qs.Encode()
+
+	r, e := s.serv.NewRequest("DELETE", s.serv.URL.String(), nil, nil)
+	if e != nil {
+		return e
+	}
+
+	res := struct {
+		Errors dutil.Errors `json:"errors"`
+	}{}
+	// decode response
+	_, e = s.serv.Decode(r, &res)
+	if e != nil {
+		return e
+	}
+
+	if r.StatusCode != 200 {
+		e := &dutil.Err{
+			Status: r.StatusCode,
+			Errors: res.Errors,
+		}
+		return e
+	}
+	// return on successful response
 	return nil
 }

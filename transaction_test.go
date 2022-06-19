@@ -305,9 +305,53 @@ func TestService_UpdateTransaction(t *testing.T) {
 func TestService_DeleteTransaction(t *testing.T) {
 	tt := []struct {
 		name     string
+		UUID     uuid.UUID
 		exchange *microtest.Exchange
+		e        dutil.Error
 	}{
-		{},
+		{
+			name: "permission required",
+			UUID: uuid.MustParse("d6b14d91-c5a4-4a02-a6e3-b4dd27cb663c"),
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 403,
+					Body:   `{"message":"Forbidden: Unable to process request","data":{},"errors":{"permission":["Please ensure you have permission"]}}`,
+				},
+			},
+			e: &dutil.Err{
+				Status: 403,
+				Errors: map[string][]string{
+					"permission": {"Please ensure you have permission"},
+				},
+			},
+		},
+		{
+			name: "not found",
+			UUID: uuid.UUID{},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 400,
+					Body:   `{"message":"BadRequest: Unable to process request","data":{},"errors":{"transaction":["not found"]}}`,
+				},
+			},
+			e: &dutil.Err{
+				Status: 400,
+				Errors: map[string][]string{
+					"transaction": {"not found"},
+				},
+			},
+		},
+		{
+			name: "transaction deleted",
+			UUID: uuid.MustParse("d6b14d91-c5a4-4a02-a6e3-b4dd27cb663c"),
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 200,
+					Body:   `{"message":"transaction deleted","data":{},"errors":{}}`,
+				},
+			},
+			e: nil,
+		},
 	}
 
 	s := NewService("")
@@ -317,6 +361,11 @@ func TestService_DeleteTransaction(t *testing.T) {
 		name := fmt.Sprintf("%d %s", i, tc.name)
 		t.Run(name, func(t *testing.T) {
 			ms.Append(tc.exchange)
+
+			e := s.DeleteTransaction(tc.UUID)
+			if !dutil.ErrorEqual(tc.e, e) {
+				t.Errorf("expected error %v got %v", tc.e, e)
+			}
 		})
 	}
 }
