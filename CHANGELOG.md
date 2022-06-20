@@ -5,6 +5,12 @@ The format is based on [Keep a changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.5.0] - 2022-06-20
+### Added
+- The CRUD methods
+  - `CreateItem` to create a new item.
+  - `UpdateItem` to update an item.
+  - `DeleteItem` to delete an item.
 
 ## [Released]
 ## [0.4.0] - 2022-06-17
