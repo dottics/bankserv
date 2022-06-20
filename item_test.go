@@ -40,7 +40,7 @@ func TestService_CreateItem(t *testing.T) {
 			},
 		},
 		{
-			name: "bad request",
+			name: "not found",
 			item: Item{
 				TransactionUUID: uuid.MustParse("df7e4020-3863-49f5-ae6c-6604ab64edf5"),
 				Description:     "Sasko Brown Bread",
@@ -50,13 +50,13 @@ func TestService_CreateItem(t *testing.T) {
 			},
 			exchange: &microtest.Exchange{
 				Response: microtest.Response{
-					Status: 400,
-					Body:   `{"message":"BadRequest","data":{},"errors":{"transaction":["not found"]}}`,
+					Status: 404,
+					Body:   `{"message":"NotFound: Unable to find resource","data":{},"errors":{"transaction":["not found"]}}`,
 				},
 			},
 			EItem: Item{},
 			e: &dutil.Err{
-				Status: 400,
+				Status: 404,
 				Errors: map[string][]string{
 					"transaction": {"not found"},
 				},
@@ -120,7 +120,81 @@ func TestService_UpdateItem(t *testing.T) {
 		EItem    Item
 		e        dutil.Error
 	}{
-		{},
+		{
+			name: "permission required",
+			item: Item{
+				UUID:        uuid.MustParse("b5b3df71-d3cc-4069-9912-a0e7237aee2b"),
+				Description: "Sasko Brown Bread",
+				SKU:         2,
+				Amount:      12.3,
+				Discount:    1.23,
+			},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 403,
+					Body:   `{"message":"Forbidden: Unable to process request","data":{},"errors":{"permission":["Please ensure you have permission"]}}`,
+				},
+			},
+			EItem: Item{},
+			e: &dutil.Err{
+				Status: 403,
+				Errors: map[string][]string{
+					"permission": {"Please ensure you have permission"},
+				},
+			},
+		},
+		{
+			name: "not found",
+			item: Item{
+				UUID:        uuid.MustParse("b5b3df71-d3cc-4069-9912-a0e7237aee2b"),
+				Description: "Sasko Brown Bread",
+				SKU:         2,
+				Amount:      12.3,
+				Discount:    1.23,
+			},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 404,
+					Body:   `{"message":"NotFound: Unable to find resource","data":{},"errors":{"item":["not found"]}}`,
+				},
+			},
+			EItem: Item{},
+			e: &dutil.Err{
+				Status: 404,
+				Errors: map[string][]string{
+					"item": {"not found"},
+				},
+			},
+		},
+		{
+			name: "item updated",
+			item: Item{
+				UUID:        uuid.MustParse("b5b3df71-d3cc-4069-9912-a0e7237aee2b"),
+				Description: "Sasko White Bread",
+				SKU:         4,
+				Amount:      14.3,
+				Discount:    1.43,
+			},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 200,
+					Body:   `{"message":"item updated","data":{"item":{"uuid":"b5b3df71-d3cc-4069-9912-a0e7237aee2b","transaction_uuid":"00000000-0000-0000-0000-000000000000","description":"Sasko White Bread","sku":4,"amount":14.3,"discount":1.43,"tags":[],"active":true,"create_date":"2022-06-19T15:43:01Z","update_date":"2022-06-19T15:43:01Z"}},"errors":{}}`,
+				},
+			},
+			EItem: Item{
+				UUID:            uuid.MustParse("b5b3df71-d3cc-4069-9912-a0e7237aee2b"),
+				TransactionUUID: uuid.UUID{},
+				Description:     "Sasko White Bread",
+				SKU:             4,
+				Amount:          14.3,
+				Discount:        1.43,
+				Active:          true,
+				CreateDate:      timeMustParse("2022-06-19T15:43:01.000Z"),
+				UpdateDate:      timeMustParse("2022-06-19T15:43:01.000Z"),
+				Tags:            Tags{},
+			},
+			e: nil,
+		},
 	}
 
 	s := NewService("")
@@ -131,6 +205,13 @@ func TestService_UpdateItem(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			ms.Append(tc.exchange)
 
+			it, e := s.UpdateItem(tc.item)
+			if !dutil.ErrorEqual(tc.e, e) {
+				t.Errorf("expected error %v got %v", tc.e, e)
+			}
+			if !EqualItem(tc.EItem, it) {
+				t.Errorf("expected item %v got %v", tc.EItem, it)
+			}
 		})
 	}
 }
