@@ -223,7 +223,50 @@ func TestService_DeleteItem(t *testing.T) {
 		exchange *microtest.Exchange
 		e        dutil.Error
 	}{
-		{},
+		{
+			name: "permission required",
+			UUID: uuid.MustParse("b5b3df71-d3cc-4069-9912-a0e7237aee2b"),
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 403,
+					Body:   `{"message":"Forbidden: Unable to process request","data":{},"errors":{"permission":["Please ensure you have permission"]}}`,
+				},
+			},
+			e: &dutil.Err{
+				Status: 403,
+				Errors: map[string][]string{
+					"permission": {"Please ensure you have permission"},
+				},
+			},
+		},
+		{
+			name: "not found",
+			UUID: uuid.MustParse("b5b3df71-d3cc-4069-9912-a0e7237aee2b"),
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 404,
+					Body:   `{"message":"NotFound: Unable to find resource","data":{},"errors":{"item":["not found"]}}`,
+				},
+			},
+			e: &dutil.Err{
+				Status: 404,
+				Errors: map[string][]string{
+					"item": {"not found"},
+				},
+			},
+		},
+		{
+
+			name: "delete item",
+			UUID: uuid.MustParse("b5b3df71-d3cc-4069-9912-a0e7237aee2b"),
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 200,
+					Body:   `{"message":"item deleted","data":{},"errors":{}}`,
+				},
+			},
+			e: nil,
+		},
 	}
 
 	s := NewService("")
@@ -234,6 +277,10 @@ func TestService_DeleteItem(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			ms.Append(tc.exchange)
 
+			e := s.DeleteItem(tc.UUID)
+			if !dutil.ErrorEqual(tc.e, e) {
+				t.Errorf("expected error %v got %v", tc.e, e)
+			}
 		})
 	}
 }

@@ -3,6 +3,7 @@ package bankserv
 import (
 	"github.com/dottics/dutil"
 	"github.com/google/uuid"
+	"net/url"
 )
 
 // CreateItem creates a new Item for a transaction based on the item data passed
@@ -88,5 +89,31 @@ func (s *Service) UpdateItem(i Item) (Item, dutil.Error) {
 // passed. It returns nil if the item delete was successful and return an error
 // if any error has occurred.
 func (s *Service) DeleteItem(UUID uuid.UUID) dutil.Error {
+	// set path
+	s.serv.URL.Path = "/item/-"
+	// set query string
+	qs := url.Values{"uuid": {UUID.String()}}
+	s.serv.URL.RawQuery = qs.Encode()
+	// do request
+	r, e := s.serv.NewRequest("DELETE", s.serv.URL.String(), nil, nil)
+	if e != nil {
+		return e
+	}
+
+	res := struct {
+		Errors dutil.Errors `json:"errors"`
+	}{}
+	_, e = s.serv.Decode(r, &res)
+	if e != nil {
+		return e
+	}
+
+	if r.StatusCode != 200 {
+		e := &dutil.Err{
+			Status: r.StatusCode,
+			Errors: res.Errors,
+		}
+		return e
+	}
 	return nil
 }
