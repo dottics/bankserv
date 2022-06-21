@@ -16,11 +16,13 @@ type Bank struct {
 type Banks []Bank
 
 type Tag struct {
-	UUID       uuid.UUID `json:"uuid"`
-	Tag        string    `json:"tag"`
-	Active     bool      `json:"active"`
-	CreateDate time.Time `json:"create_date"`
-	UpdateDate time.Time `json:"update_date"`
+	UUID             uuid.UUID `json:"uuid"`
+	UserUUID         uuid.UUID `json:"user_uuid"`
+	OrganisationUUID uuid.UUID `json:"organisation_uuidUUID"`
+	Tag              string    `json:"tag"`
+	Active           bool      `json:"active"`
+	CreateDate       time.Time `json:"create_date"`
+	UpdateDate       time.Time `json:"update_date"`
 }
 type Tags []Tag
 
