@@ -3,6 +3,7 @@ package bankserv
 import (
 	"github.com/dottics/dutil"
 	"github.com/google/uuid"
+	"net/url"
 )
 
 // CreateTag creates a new Tag based on the tag data passed to the method.
@@ -84,5 +85,34 @@ func (s *Service) UpdateTag(t Tag) (Tag, dutil.Error) {
 
 // DeleteTag deletes a tag based on the UUID passed to the method.
 func (s *Service) DeleteTag(UUID uuid.UUID) dutil.Error {
+	// set path
+	s.serv.URL.Path = "/tag/-"
+	// set query string
+	qs := url.Values{"uuid": {UUID.String()}}
+	s.serv.URL.RawQuery = qs.Encode()
+
+	// do request
+	r, e := s.serv.NewRequest("DELETE", s.serv.URL.String(), nil, nil)
+	if e != nil {
+		return e
+	}
+
+	res := struct {
+		Errors dutil.Errors `json:"errors"`
+	}{}
+	// decode response
+	_, e = s.serv.Decode(r, &res)
+	if e != nil {
+		return e
+	}
+
+	if r.StatusCode != 200 {
+		e := &dutil.Err{
+			Status: r.StatusCode,
+			Errors: res.Errors,
+		}
+		return e
+	}
+
 	return nil
 }

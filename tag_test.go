@@ -198,6 +198,32 @@ func TestService_DeleteTag(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "not found",
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 404,
+					Body:   `{"message":"NotFound: Unable to find resource","data":{},"errors":{"tag":["not found"]}}`,
+				},
+			},
+			e: &dutil.Err{
+				Status: 404,
+				Errors: map[string][]string{
+					"tag": {"not found"},
+				},
+			},
+		},
+		{
+			name: "tag deleted",
+			UUID: uuid.MustParse("715e1420-48b9-4fd7-9fff-140013cded72"),
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 200,
+					Body:   `{"message":"tag deleted","data":{},"errors":{}}`,
+				},
+			},
+			e: nil,
+		},
 	}
 
 	s := NewService("")
