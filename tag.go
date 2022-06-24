@@ -45,7 +45,41 @@ func (s *Service) CreateTag(t Tag) (Tag, dutil.Error) {
 
 // UpdateTag updates a tag's data with the tag data passed to the method.
 func (s *Service) UpdateTag(t Tag) (Tag, dutil.Error) {
-	return Tag{}, nil
+	// set path
+	s.serv.URL.Path = "/tag/-"
+	// marshal payload
+	p, e := dutil.MarshalReader(t)
+	if e != nil {
+		return Tag{}, e
+	}
+
+	r, e := s.serv.NewRequest("PUT", s.serv.URL.String(), nil, p)
+	if e != nil {
+		return Tag{}, e
+	}
+
+	type Data struct {
+		Tag `json:"tag"`
+	}
+	res := struct {
+		Data   `json:"data"`
+		Errors dutil.Errors `json:"errors"`
+	}{}
+	// decode response
+	_, e = s.serv.Decode(r, &res)
+	if e != nil {
+		return Tag{}, e
+	}
+
+	if r.StatusCode != 200 {
+		e := &dutil.Err{
+			Status: r.StatusCode,
+			Errors: res.Errors,
+		}
+		return Tag{}, e
+	}
+
+	return res.Data.Tag, nil
 }
 
 // DeleteTag deletes a tag based on the UUID passed to the method.

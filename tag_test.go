@@ -104,17 +104,58 @@ func TestService_UpdateTag(t *testing.T) {
 	}{
 		{
 			name: "permission required",
+			tag:  Tag{},
 			exchange: &microtest.Exchange{
 				Response: microtest.Response{
 					Status: 403,
 					Body:   `{"message":"Forbidden: Unable to process request","data":{},"errors":{"permission":["Please ensure you have permission"]}}`,
 				},
 			},
+			ETag: Tag{},
 			e: &dutil.Err{
 				Status: 403,
 				Errors: map[string][]string{
 					"permission": {"Please ensure you have permission"},
 				},
+			},
+		},
+		{
+			name: "bad request",
+			tag:  Tag{},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 400,
+					Body:   `{"message":"BadRequest: Unable to process request","data":{},"errors":{"uuid":["required field"]}}`,
+				},
+			},
+			ETag: Tag{},
+			e: &dutil.Err{
+				Status: 400,
+				Errors: map[string][]string{
+					"uuid": {"required field"},
+				},
+			},
+		},
+		{
+			name: "update tag",
+			tag: Tag{
+				UUID: uuid.MustParse("715e1420-48b9-4fd7-9fff-140013cded72"),
+				Tag:  "new tag name",
+			},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 200,
+					Body:   `{"message":"tag updated","data":{"tag":{"uuid":"715e1420-48b9-4fd7-9fff-140013cded72","user_uuid":"ac640bd0-9b33-4e19-a702-abb48b4f3b18","organisation_uuidUUID":"00000000-0000-0000-0000-000000000000","tag":"new tag name","active":true,"create_date":"0001-01-01T00:00:00Z","update_date":"0001-01-01T00:00:00Z"}},"errors":{}}`,
+				},
+			},
+			ETag: Tag{
+				UUID:             uuid.MustParse("715e1420-48b9-4fd7-9fff-140013cded72"),
+				UserUUID:         uuid.MustParse("ac640bd0-9b33-4e19-a702-abb48b4f3b18"),
+				OrganisationUUID: uuid.UUID{},
+				Tag:              "new tag name",
+				Active:           true,
+				CreateDate:       timeMustParse("2022-0624T11:11:30Z"),
+				UpdateDate:       timeMustParse("2022-0624T11:11:30Z"),
 			},
 		},
 	}
