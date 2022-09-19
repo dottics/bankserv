@@ -5,7 +5,12 @@ The format is based on [Keep a changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-## [0.7.0] - 2022-6-24
+## [0.8.0] - 2022-09-19
+### Added
+- The Get User Transactions method. To enable getting all a user's transactions
+based on the user's UUID.
+
+## [0.7.0] - 2022-06-24
 ### Added
 - The Get Tag methods
   - `GetTags` to get all system default tags.

@@ -44,6 +44,46 @@ func (s *Service) GetBankAccountTransactions(UUID uuid.UUID) (Transactions, duti
 	return res.Data.Transactions, nil
 }
 
+// GetUserTransactions gets all the transactions for a user based on the user's
+// UUID. It does this by filtering by all the user's bank accounts. Then returns
+// a slice of Transaction. If an error occurs the error wil not be nil. If the
+// user's bank accounts have no transactions then an empty slice will be
+// returned.
+func (s *Service) GetUserTransactions(UUID uuid.UUID) (Transactions, dutil.Error) {
+	// set path
+	s.serv.URL.Path = "/transaction/user/-"
+	// set query string
+	qs := url.Values{"uuid": {UUID.String()}}
+	s.serv.URL.RawQuery = qs.Encode()
+
+	r, e := s.serv.NewRequest("GET", s.serv.URL.String(), nil, nil)
+	if e != nil {
+		return Transactions{}, e
+	}
+
+	type Data struct {
+		Transactions Transactions `json:"transactions"`
+	}
+	res := struct {
+		Data   Data         `json:"data"`
+		Errors dutil.Errors `json:"errors"`
+	}{}
+
+	_, e = s.serv.Decode(r, &res)
+	if e != nil {
+		return Transactions{}, e
+	}
+
+	if r.StatusCode != 200 {
+		e := &dutil.Err{
+			Status: r.StatusCode,
+			Errors: res.Errors,
+		}
+		return Transactions{}, e
+	}
+	return res.Data.Transactions, nil
+}
+
 // CreateTransaction creates a new transaction for a bank account based on the
 // transaction data that is passed to the function.
 func (s *Service) CreateTransaction(t Transaction) (Transaction, dutil.Error) {
