@@ -12,7 +12,7 @@ import (
 // and an error.
 func (s *Service) GetUserAccounts(UUID uuid.UUID) (Accounts, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/bank-account/user/-"
+	s.serv.URL.Path = "/account/user/-"
 	// add query string
 	qs := url.Values{"uuid": {UUID.String()}}
 	s.serv.URL.RawQuery = qs.Encode()
@@ -53,7 +53,7 @@ func (s *Service) GetUserAccounts(UUID uuid.UUID) (Accounts, dutil.Error) {
 // Account. If error occurs an error is returned.
 func (s *Service) GetOrganisationAccounts(UUID uuid.UUID) (Accounts, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/bank-account/organisation/-"
+	s.serv.URL.Path = "/account/organisation/-"
 	// set query string
 	qs := url.Values{"uuid": {UUID.String()}}
 	s.serv.URL.RawQuery = qs.Encode()
@@ -93,7 +93,7 @@ func (s *Service) GetOrganisationAccounts(UUID uuid.UUID) (Accounts, dutil.Error
 // it returns the bank account, or if an error occurs an error is returned.
 func (s *Service) CreateAccount(b Account) (Account, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/bank-account"
+	s.serv.URL.Path = "/account"
 	// marshal data to payload reader
 	p, e := dutil.MarshalReader(b)
 	if e != nil {
@@ -133,7 +133,7 @@ func (s *Service) CreateAccount(b Account) (Account, dutil.Error) {
 // UpdateAccount updates a specific bank account's data.
 func (s *Service) UpdateAccount(b Account) (Account, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/bank-account/-"
+	s.serv.URL.Path = "/account/-"
 	// marshal payload reader
 	p, e := dutil.MarshalReader(b)
 	if e != nil {
@@ -172,7 +172,7 @@ func (s *Service) UpdateAccount(b Account) (Account, dutil.Error) {
 // DeleteAccount deletes a specific bank account's data.
 func (s *Service) DeleteAccount(UUID uuid.UUID) dutil.Error {
 	// set path
-	s.serv.URL.Path = "/bank-account/-"
+	s.serv.URL.Path = "/account/-"
 	qs := url.Values{"uuid": {UUID.String()}}
 	s.serv.URL.RawQuery = qs.Encode()
 

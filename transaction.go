@@ -12,7 +12,7 @@ import (
 // bank account has no transactions an empty slice will be returned.
 func (s *Service) GetAccountTransactions(UUID uuid.UUID) (Transactions, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/transaction/bank-account/-"
+	s.serv.URL.Path = "/transaction/account/-"
 	// set query string
 	qs := url.Values{"uuid": {UUID.String()}}
 	s.serv.URL.RawQuery = qs.Encode()
