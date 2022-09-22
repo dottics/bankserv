@@ -6,11 +6,11 @@ import (
 	"net/url"
 )
 
-// GetBankAccountTransactions gets all the transactions for a specific bank
+// GetAccountTransactions gets all the transactions for a specific bank
 // account based on the bank account's UUID passed to the function and returns
 // a slice of Transaction. If an error occurs the error will not be nil. If the
 // bank account has no transactions an empty slice will be returned.
-func (s *Service) GetBankAccountTransactions(UUID uuid.UUID) (Transactions, dutil.Error) {
+func (s *Service) GetAccountTransactions(UUID uuid.UUID) (Transactions, dutil.Error) {
 	// set path
 	s.serv.URL.Path = "/transaction/bank-account/-"
 	// set query string

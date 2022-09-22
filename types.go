@@ -52,7 +52,7 @@ type Transaction struct {
 }
 type Transactions []Transaction
 
-type BankAccount struct {
+type Account struct {
 	UUID             uuid.UUID `json:"uuid"`
 	UserUUID         uuid.UUID `json:"user_uuid"`
 	OrganisationUUID uuid.UUID `json:"organisation_uuid"`
@@ -61,7 +61,7 @@ type BankAccount struct {
 	CreateDate       time.Time `json:"create_date"`
 	UpdateDate       time.Time `json:"update_date"`
 }
-type BankAccounts []BankAccount
+type Accounts []Account
 
 // timeMustParse is a function the parses a time string formatted based on the
 // RFC3339 standard as 2006-01-02T15:04:05Z07:00 to a time.Time and returns

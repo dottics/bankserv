@@ -8,12 +8,12 @@ import (
 	"testing"
 )
 
-func TestService_GetUserBankAccounts(t *testing.T) {
+func TestService_GetUserAccounts(t *testing.T) {
 	tt := []struct {
-		name         string
-		exchange     *microtest.Exchange
-		bankAccounts BankAccounts
-		e            dutil.Error
+		name     string
+		exchange *microtest.Exchange
+		accounts Accounts
+		e        dutil.Error
 	}{
 		{
 			name: "permission required",
@@ -23,7 +23,7 @@ func TestService_GetUserBankAccounts(t *testing.T) {
 					Body:   `{"message":"Forbidden: Unable to process request","data":{},"errors":{"permission":["Please ensure you have permission"]}}`,
 				},
 			},
-			bankAccounts: BankAccounts{},
+			accounts: Accounts{},
 			e: &dutil.Err{
 				Errors: map[string][]string{
 					"permission": {"Please ensure you have permission"},
@@ -38,7 +38,7 @@ func TestService_GetUserBankAccounts(t *testing.T) {
 					Body:   `{"message":"NotFound: Unable to find resource","data":{},"errors":{"user":["not found"]}}`,
 				},
 			},
-			bankAccounts: BankAccounts{},
+			accounts: Accounts{},
 			e: &dutil.Err{
 				Errors: map[string][]string{
 					"user": {"not found"},
@@ -53,8 +53,8 @@ func TestService_GetUserBankAccounts(t *testing.T) {
 					Body:   `{"message":"user bank accounts found","data":{"bank_accounts":[]},"errors":{}}`,
 				},
 			},
-			bankAccounts: BankAccounts{},
-			e:            nil,
+			accounts: Accounts{},
+			e:        nil,
 		},
 		{
 			name: "user has bank accounts",
@@ -64,8 +64,8 @@ func TestService_GetUserBankAccounts(t *testing.T) {
 					Body:   `{"message":"user bank accounts found","data":{"bank_accounts":[{"uuid":"318b052a-7911-4e09-a76d-f6e6a18c6fcd","user_uuid":"ef50ad5f-539a-454d-bb49-c2e3123eaba8","organisation_uuid":null,"account_number":"012345678911","active":true,"create_date":"2022-05-17T04:35:23.000Z","update_date":"2022-05-17T04:35:23.000Z"},{"uuid":"d25ac3b1-0a8f-43a3-8da1-d2f22a814a82","user_uuid":"ef50ad5f-539a-454d-bb49-c2e3123eaba8","organisation_uuid":null,"account_number":"012345678912","active":true,"create_date":"2022-05-17T06:53:32.000Z","update_date":"2022-05-17T06:53:32.000Z"}]},"errors":{}}`,
 				},
 			},
-			bankAccounts: BankAccounts{
-				BankAccount{
+			accounts: Accounts{
+				Account{
 					UUID:             uuid.MustParse("318b052a-7911-4e09-a76d-f6e6a18c6fcd"),
 					UserUUID:         uuid.MustParse("ef50ad5f-539a-454d-bb49-c2e3123eaba8"),
 					OrganisationUUID: uuid.UUID{},
@@ -74,7 +74,7 @@ func TestService_GetUserBankAccounts(t *testing.T) {
 					CreateDate:       timeMustParse("2022-05-17T04:35:23.000Z"),
 					UpdateDate:       timeMustParse("2022-05-17T04:35:23.000Z"),
 				},
-				BankAccount{
+				Account{
 					UUID:             uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
 					UserUUID:         uuid.MustParse("ef50ad5f-539a-454d-bb49-c2e3123eaba8"),
 					OrganisationUUID: uuid.UUID{},
@@ -96,24 +96,24 @@ func TestService_GetUserBankAccounts(t *testing.T) {
 		UUID := uuid.MustParse("ef50ad5f-539a-454d-bb49-c2e3123eaba8")
 		t.Run(name, func(t *testing.T) {
 			ms.Append(tc.exchange)
-			xba, e := s.GetUserBankAccounts(UUID)
+			xba, e := s.GetUserAccounts(UUID)
 			// test that the errors are equal
 			if !dutil.ErrorEqual(tc.e, e) {
 				t.Errorf("expected error %v got %v", tc.e, e)
 			}
 			// test the bank accounts
-			if len(xba) != len(tc.bankAccounts) {
+			if len(xba) != len(tc.accounts) {
 				t.Errorf(
 					"expected bank accounts to have length %d got %d",
-					len(tc.bankAccounts),
+					len(tc.accounts),
 					len(xba),
 				)
 			}
 			// to check that bank account are equal
-			if len(xba) > 0 && tc.bankAccounts[0] != xba[0] {
+			if len(xba) > 0 && tc.accounts[0] != xba[0] {
 				t.Errorf(
 					"expected bank account %v got %v",
-					tc.bankAccounts[0],
+					tc.accounts[0],
 					xba[0],
 				)
 			}
@@ -121,12 +121,12 @@ func TestService_GetUserBankAccounts(t *testing.T) {
 	}
 }
 
-func TestService_GetOrganisationBankAccounts(t *testing.T) {
+func TestService_GetOrganisationAccounts(t *testing.T) {
 	tt := []struct {
-		name         string
-		exchange     *microtest.Exchange
-		bankAccounts BankAccounts
-		e            dutil.Error
+		name     string
+		exchange *microtest.Exchange
+		accounts Accounts
+		e        dutil.Error
 	}{
 		{
 			name: "permission required",
@@ -136,7 +136,7 @@ func TestService_GetOrganisationBankAccounts(t *testing.T) {
 					Body:   `{"message":"Forbidden: Unable to process request","data":{},"errors":{"permission":["Please ensure you have permission"]}}`,
 				},
 			},
-			bankAccounts: BankAccounts{},
+			accounts: Accounts{},
 			e: &dutil.Err{
 				Errors: map[string][]string{
 					"permission": {"Please ensure you have permission"},
@@ -151,7 +151,7 @@ func TestService_GetOrganisationBankAccounts(t *testing.T) {
 					Body:   `{"message":"NotFound: Unable to find resource","data":{},"errors":{"organisation":["not found"]}}`,
 				},
 			},
-			bankAccounts: BankAccounts{},
+			accounts: Accounts{},
 			e: &dutil.Err{
 				Errors: map[string][]string{
 					"organisation": {"not found"},
@@ -166,8 +166,8 @@ func TestService_GetOrganisationBankAccounts(t *testing.T) {
 					Body:   `{"message":"organisation bank accounts found","data":{"bank_accounts":[]},"errors":{}}`,
 				},
 			},
-			bankAccounts: BankAccounts{},
-			e:            nil,
+			accounts: Accounts{},
+			e:        nil,
 		},
 		{
 			name: "organisation has bank accounts",
@@ -177,8 +177,8 @@ func TestService_GetOrganisationBankAccounts(t *testing.T) {
 					Body:   `{"message":"organisation bank accounts found","data":{"bank_accounts":[{"uuid":"318b052a-7911-4e09-a76d-f6e6a18c6fcd","organisation_uuid":"ef50ad5f-539a-454d-bb49-c2e3123eaba8","user_uuid":null,"account_number":"012345678911","active":true,"create_date":"2022-05-17T04:35:23.000Z","update_date":"2022-05-17T04:35:23.000Z"},{"uuid":"d25ac3b1-0a8f-43a3-8da1-d2f22a814a82","organisation_uuid":"ef50ad5f-539a-454d-bb49-c2e3123eaba8","user_uuid":null,"account_number":"012345678912","active":true,"create_date":"2022-05-17T06:53:32.000Z","update_date":"2022-05-17T06:53:32.000Z"}]},"errors":{}}`,
 				},
 			},
-			bankAccounts: BankAccounts{
-				BankAccount{
+			accounts: Accounts{
+				Account{
 					UUID:             uuid.MustParse("318b052a-7911-4e09-a76d-f6e6a18c6fcd"),
 					UserUUID:         uuid.UUID{},
 					OrganisationUUID: uuid.MustParse("ef50ad5f-539a-454d-bb49-c2e3123eaba8"),
@@ -187,7 +187,7 @@ func TestService_GetOrganisationBankAccounts(t *testing.T) {
 					CreateDate:       timeMustParse("2022-05-17T04:35:23.000Z"),
 					UpdateDate:       timeMustParse("2022-05-17T04:35:23.000Z"),
 				},
-				BankAccount{
+				Account{
 					UUID:             uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
 					UserUUID:         uuid.UUID{},
 					OrganisationUUID: uuid.MustParse("ef50ad5f-539a-454d-bb49-c2e3123eaba8"),
@@ -211,24 +211,24 @@ func TestService_GetOrganisationBankAccounts(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			ms.Append(tc.exchange)
 
-			xba, e := s.GetOrganisationBankAccounts(UUID)
+			xba, e := s.GetOrganisationAccounts(UUID)
 			// test that the errors are equal
 			if !dutil.ErrorEqual(tc.e, e) {
 				t.Errorf("expected error %v got %v", tc.e, e)
 			}
 			// test the bank accounts
-			if len(xba) != len(tc.bankAccounts) {
+			if len(xba) != len(tc.accounts) {
 				t.Errorf(
 					"expected bank accounts to have length %d got %d",
-					len(tc.bankAccounts),
+					len(tc.accounts),
 					len(xba),
 				)
 			}
 			// to check that bank account are equal
-			if len(xba) > 0 && tc.bankAccounts[0] != xba[0] {
+			if len(xba) > 0 && tc.accounts[0] != xba[0] {
 				t.Errorf(
 					"expected bank account %v got %v",
-					tc.bankAccounts[0],
+					tc.accounts[0],
 					xba[0],
 				)
 			}
@@ -236,37 +236,37 @@ func TestService_GetOrganisationBankAccounts(t *testing.T) {
 	}
 }
 
-var userBankAccount = BankAccount{
+var userAccount = Account{
 	UUID:             uuid.MustParse("e6b7f986-307c-4147-a34e-f924790799bb"),
 	UserUUID:         uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
 	OrganisationUUID: uuid.UUID{},
 	AccountNumber:    "098765432109",
 }
-var organisationBankAccount = BankAccount{
+var organisationAccount = Account{
 	UUID:             uuid.MustParse("e6b7f986-307c-4147-a34e-f924790799bb"),
 	OrganisationUUID: uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
 	UserUUID:         uuid.UUID{},
 	AccountNumber:    "098765432109",
 }
 
-func TestService_CreateBankAccount(t *testing.T) {
+func TestService_CreateAccount(t *testing.T) {
 	tt := []struct {
-		name         string
-		bankAccount  BankAccount // payload data
-		exchange     *microtest.Exchange
-		eBankAccount BankAccount // expected bank account
-		e            dutil.Error
+		name     string
+		account  Account // payload data
+		exchange *microtest.Exchange
+		eAccount Account // expected bank account
+		e        dutil.Error
 	}{
 		{
-			name:        "permission required",
-			bankAccount: userBankAccount,
+			name:    "permission required",
+			account: userAccount,
 			exchange: &microtest.Exchange{
 				Response: microtest.Response{
 					Status: 403,
 					Body:   `{"message":"","data":{},"errors":{"permission":["Please ensure you have permission"]}}`,
 				},
 			},
-			eBankAccount: BankAccount{},
+			eAccount: Account{},
 			e: &dutil.Err{
 				Errors: map[string][]string{
 					"permission": {"Please ensure you have permission"},
@@ -274,15 +274,15 @@ func TestService_CreateBankAccount(t *testing.T) {
 			},
 		},
 		{
-			name:        "user not found",
-			bankAccount: userBankAccount,
+			name:    "user not found",
+			account: userAccount,
 			exchange: &microtest.Exchange{
 				Response: microtest.Response{
 					Status: 404,
 					Body:   `{"message":"NotFound: unable to find resource","data":{},"errors":{"user":["not found"]}}`,
 				},
 			},
-			eBankAccount: BankAccount{},
+			eAccount: Account{},
 			e: &dutil.Err{
 				Errors: map[string][]string{
 					"user": {"not found"},
@@ -290,15 +290,15 @@ func TestService_CreateBankAccount(t *testing.T) {
 			},
 		},
 		{
-			name:        "organisation not found",
-			bankAccount: organisationBankAccount,
+			name:    "organisation not found",
+			account: organisationAccount,
 			exchange: &microtest.Exchange{
 				Response: microtest.Response{
 					Status: 404,
 					Body:   `{"message":"NotFound: unable to find resource","data":{},"errors":{"organisation":["not found"]}}`,
 				},
 			},
-			eBankAccount: BankAccount{},
+			eAccount: Account{},
 			e: &dutil.Err{
 				Errors: map[string][]string{
 					"organisation": {"not found"},
@@ -306,15 +306,15 @@ func TestService_CreateBankAccount(t *testing.T) {
 			},
 		},
 		{
-			name:        "create user bank account",
-			bankAccount: userBankAccount,
+			name:    "create user bank account",
+			account: userAccount,
 			exchange: &microtest.Exchange{
 				Response: microtest.Response{
 					Status: 201,
 					Body:   `{"message":"bank account create","data":{"bank_account":{"uuid":"e6b7f986-307c-4147-a34e-f924790799bb","user_uuid":"e4bd194d-41e7-4f27-a4a8-161685a9b8b8","organisation_uuid":null,"account_number":"098765432109","active":true,"create_date":"2022-06-17T21:57:12.000Z","update_date":"2022-06-17T21:57:12.000Z"}},"errors":{}}`,
 				},
 			},
-			eBankAccount: BankAccount{
+			eAccount: Account{
 				UUID:             uuid.MustParse("e6b7f986-307c-4147-a34e-f924790799bb"),
 				UserUUID:         uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
 				OrganisationUUID: uuid.UUID{},
@@ -326,15 +326,15 @@ func TestService_CreateBankAccount(t *testing.T) {
 			e: nil,
 		},
 		{
-			name:        "create organisation bank account",
-			bankAccount: organisationBankAccount,
+			name:    "create organisation bank account",
+			account: organisationAccount,
 			exchange: &microtest.Exchange{
 				Response: microtest.Response{
 					Status: 201,
 					Body:   `{"message":"bank account create","data":{"bank_account":{"uuid":"e6b7f986-307c-4147-a34e-f924790799bb","user_uuid":null,"organisation_uuid":"e4bd194d-41e7-4f27-a4a8-161685a9b8b8","account_number":"098765432109","active":true,"create_date":"2022-06-17T21:57:12.000Z","update_date":"2022-06-17T21:57:12.000Z"}},"errors":{}}`,
 				},
 			},
-			eBankAccount: BankAccount{
+			eAccount: Account{
 				UUID:             uuid.MustParse("e6b7f986-307c-4147-a34e-f924790799bb"),
 				UserUUID:         uuid.UUID{},
 				OrganisationUUID: uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
@@ -355,35 +355,35 @@ func TestService_CreateBankAccount(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			ms.Append(tc.exchange)
 
-			b, e := s.CreateBankAccount(tc.bankAccount)
+			b, e := s.CreateAccount(tc.account)
 			if !dutil.ErrorEqual(tc.e, e) {
 				t.Errorf("expected error %v got %v", tc.e, e)
 			}
-			if b != tc.eBankAccount {
-				t.Errorf("expected bank account %v got %v", tc.eBankAccount, b)
+			if b != tc.eAccount {
+				t.Errorf("expected bank account %v got %v", tc.eAccount, b)
 			}
 		})
 	}
 }
 
-func TestService_UpdateBankAccount(t *testing.T) {
+func TestService_UpdateAccount(t *testing.T) {
 	tt := []struct {
-		name         string
-		bankAccount  BankAccount // payload data
-		exchange     *microtest.Exchange
-		eBankAccount BankAccount // expected bank account
-		e            dutil.Error
+		name     string
+		account  Account // payload data
+		exchange *microtest.Exchange
+		eAccount Account // expected bank account
+		e        dutil.Error
 	}{
 		{
-			name:        "permission required",
-			bankAccount: userBankAccount,
+			name:    "permission required",
+			account: userAccount,
 			exchange: &microtest.Exchange{
 				Response: microtest.Response{
 					Status: 403,
 					Body:   `{"message":"","data":{},"errors":{"permission":["Please ensure you have permission"]}}`,
 				},
 			},
-			eBankAccount: BankAccount{},
+			eAccount: Account{},
 			e: &dutil.Err{
 				Errors: map[string][]string{
 					"permission": {"Please ensure you have permission"},
@@ -391,15 +391,15 @@ func TestService_UpdateBankAccount(t *testing.T) {
 			},
 		},
 		{
-			name:        "update bank account",
-			bankAccount: organisationBankAccount,
+			name:    "update bank account",
+			account: organisationAccount,
 			exchange: &microtest.Exchange{
 				Response: microtest.Response{
 					Status: 200,
 					Body:   `{"message":"bank account create","data":{"bank_account":{"uuid":"e6b7f986-307c-4147-a34e-f924790799bb","user_uuid":null,"organisation_uuid":"e4bd194d-41e7-4f27-a4a8-161685a9b8b8","account_number":"098765432109","active":true,"create_date":"2022-06-17T22:16:12.000Z","update_date":"2022-06-17T22:16:12.000Z"}},"errors":{}}`,
 				},
 			},
-			eBankAccount: BankAccount{
+			eAccount: Account{
 				UUID:             uuid.MustParse("e6b7f986-307c-4147-a34e-f924790799bb"),
 				OrganisationUUID: uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
 				UserUUID:         uuid.UUID{},
@@ -419,18 +419,18 @@ func TestService_UpdateBankAccount(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			ms.Append(tc.exchange)
 
-			b, e := s.UpdateBankAccount(tc.bankAccount)
+			b, e := s.UpdateAccount(tc.account)
 			if !dutil.ErrorEqual(tc.e, e) {
 				t.Errorf("expected error %v got %v", tc.e, e)
 			}
-			if b != tc.eBankAccount {
-				t.Errorf("expected bank account %v got %v", tc.eBankAccount, b)
+			if b != tc.eAccount {
+				t.Errorf("expected bank account %v got %v", tc.eAccount, b)
 			}
 		})
 	}
 }
 
-func TestService_DeleteBankAccount(t *testing.T) {
+func TestService_DeleteAccount(t *testing.T) {
 	tt := []struct {
 		name     string
 		exchange *microtest.Exchange
@@ -472,7 +472,7 @@ func TestService_DeleteBankAccount(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			ms.Append(tc.exchange)
 
-			e := s.DeleteBankAccount(UUID)
+			e := s.DeleteAccount(UUID)
 			if !dutil.ErrorEqual(tc.e, e) {
 				t.Errorf("expected error %v got %v", tc.e, e)
 			}

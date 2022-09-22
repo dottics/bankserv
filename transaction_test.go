@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestService_GetBankAccountTransactions(t *testing.T) {
+func TestService_GetAccountTransactions(t *testing.T) {
 	tt := []struct {
 		name         string
 		exchange     *microtest.Exchange
@@ -103,7 +103,7 @@ func TestService_GetBankAccountTransactions(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			ms.Append(tc.exchange)
 
-			xt, e := s.GetBankAccountTransactions(UUID)
+			xt, e := s.GetAccountTransactions(UUID)
 			if !dutil.ErrorEqual(tc.e, e) {
 				t.Errorf("expected error %v got %v", tc.e, e)
 			}

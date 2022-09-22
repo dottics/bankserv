@@ -6,11 +6,11 @@ import (
 	"net/url"
 )
 
-// GetUserBankAccounts gets all the bank accounts for a specific user based on
-// the user's UUID passed to the function and returns a slice of BankAccount.
+// GetUserAccounts gets all the bank accounts for a specific user based on
+// the user's UUID passed to the function and returns a slice of Account.
 // If an error occurs such as the user not found then an empty slice is returned
 // and an error.
-func (s *Service) GetUserBankAccounts(UUID uuid.UUID) (BankAccounts, dutil.Error) {
+func (s *Service) GetUserAccounts(UUID uuid.UUID) (Accounts, dutil.Error) {
 	// set path
 	s.serv.URL.Path = "/bank-account/user/-"
 	// add query string
@@ -19,12 +19,12 @@ func (s *Service) GetUserBankAccounts(UUID uuid.UUID) (BankAccounts, dutil.Error
 	// do request
 	r, e := s.serv.NewRequest("GET", s.serv.URL.String(), nil, nil)
 	if e != nil {
-		return BankAccounts{}, e
+		return Accounts{}, e
 	}
 
 	// response structure
 	type Data struct {
-		BankAccounts `json:"bank_accounts"`
+		Accounts `json:"bank_accounts"`
 	}
 	res := struct {
 		Data   `json:"data"`
@@ -34,7 +34,7 @@ func (s *Service) GetUserBankAccounts(UUID uuid.UUID) (BankAccounts, dutil.Error
 	// decode the response
 	_, e = s.serv.Decode(r, &res)
 	if e != nil {
-		return BankAccounts{}, e
+		return Accounts{}, e
 	}
 
 	if r.StatusCode != 200 {
@@ -42,16 +42,16 @@ func (s *Service) GetUserBankAccounts(UUID uuid.UUID) (BankAccounts, dutil.Error
 			Status: r.StatusCode,
 			Errors: res.Errors,
 		}
-		return BankAccounts{}, e
+		return Accounts{}, e
 	}
 	// return bank accounts on successful
-	return res.Data.BankAccounts, nil
+	return res.Data.Accounts, nil
 }
 
-// GetOrganisationBankAccounts gets all the bank accounts for a specific
+// GetOrganisationAccounts gets all the bank accounts for a specific
 // organisation based on the organisation's UUID and returns a slice of
-// BankAccount. If error occurs an error is returned.
-func (s *Service) GetOrganisationBankAccounts(UUID uuid.UUID) (BankAccounts, dutil.Error) {
+// Account. If error occurs an error is returned.
+func (s *Service) GetOrganisationAccounts(UUID uuid.UUID) (Accounts, dutil.Error) {
 	// set path
 	s.serv.URL.Path = "/bank-account/organisation/-"
 	// set query string
@@ -60,11 +60,11 @@ func (s *Service) GetOrganisationBankAccounts(UUID uuid.UUID) (BankAccounts, dut
 	// do request
 	r, e := s.serv.NewRequest("GET", s.serv.URL.String(), nil, nil)
 	if e != nil {
-		return BankAccounts{}, e
+		return Accounts{}, e
 	}
 
 	type Data struct {
-		BankAccounts `json:"bank_accounts"`
+		Accounts `json:"bank_accounts"`
 	}
 	res := struct {
 		Data   `json:"data"`
@@ -74,7 +74,7 @@ func (s *Service) GetOrganisationBankAccounts(UUID uuid.UUID) (BankAccounts, dut
 	// decode the response
 	_, e = s.serv.Decode(r, &res)
 	if e != nil {
-		return BankAccounts{}, e
+		return Accounts{}, e
 	}
 
 	if r.StatusCode != 200 {
@@ -82,32 +82,32 @@ func (s *Service) GetOrganisationBankAccounts(UUID uuid.UUID) (BankAccounts, dut
 			Status: r.StatusCode,
 			Errors: res.Errors,
 		}
-		return BankAccounts{}, e
+		return Accounts{}, e
 	}
 	// return the bank accounts on successful
-	return res.Data.BankAccounts, nil
+	return res.Data.Accounts, nil
 }
 
-// CreateBankAccount creates a new bank account for either the user or
+// CreateAccount creates a new bank account for either the user or
 // organisation based on which UUID is provided. After creating the bank account
 // it returns the bank account, or if an error occurs an error is returned.
-func (s *Service) CreateBankAccount(b BankAccount) (BankAccount, dutil.Error) {
+func (s *Service) CreateAccount(b Account) (Account, dutil.Error) {
 	// set path
 	s.serv.URL.Path = "/bank-account"
 	// marshal data to payload reader
 	p, e := dutil.MarshalReader(b)
 	if e != nil {
-		return BankAccount{}, e
+		return Account{}, e
 	}
 
 	// do request
 	r, e := s.serv.NewRequest("POST", s.serv.URL.String(), nil, p)
 	if e != nil {
-		return BankAccount{}, e
+		return Account{}, e
 	}
 
 	type Data struct {
-		BankAccount `json:"bank_account"`
+		Account `json:"bank_account"`
 	}
 	res := struct {
 		Data   `json:"data"`
@@ -116,7 +116,7 @@ func (s *Service) CreateBankAccount(b BankAccount) (BankAccount, dutil.Error) {
 	// decode the response
 	_, e = s.serv.Decode(r, &res)
 	if e != nil {
-		return BankAccount{}, e
+		return Account{}, e
 	}
 
 	if r.StatusCode != 201 {
@@ -124,29 +124,29 @@ func (s *Service) CreateBankAccount(b BankAccount) (BankAccount, dutil.Error) {
 			Status: r.StatusCode,
 			Errors: res.Errors,
 		}
-		return BankAccount{}, e
+		return Account{}, e
 	}
 	// return bank account on successful
-	return res.Data.BankAccount, nil
+	return res.Data.Account, nil
 }
 
-// UpdateBankAccount updates a specific bank account's data.
-func (s *Service) UpdateBankAccount(b BankAccount) (BankAccount, dutil.Error) {
+// UpdateAccount updates a specific bank account's data.
+func (s *Service) UpdateAccount(b Account) (Account, dutil.Error) {
 	// set path
 	s.serv.URL.Path = "/bank-account/-"
 	// marshal payload reader
 	p, e := dutil.MarshalReader(b)
 	if e != nil {
-		return BankAccount{}, e
+		return Account{}, e
 	}
 	// do request
 	r, e := s.serv.NewRequest("PUT", s.serv.URL.String(), nil, p)
 	if e != nil {
-		return BankAccount{}, e
+		return Account{}, e
 	}
 
 	type Data struct {
-		BankAccount `json:"bank_account"`
+		Account `json:"bank_account"`
 	}
 	res := struct {
 		Data   `json:"data"`
@@ -155,7 +155,7 @@ func (s *Service) UpdateBankAccount(b BankAccount) (BankAccount, dutil.Error) {
 	// decode response
 	_, e = s.serv.Decode(r, &res)
 	if e != nil {
-		return BankAccount{}, e
+		return Account{}, e
 	}
 
 	if r.StatusCode != 200 {
@@ -163,14 +163,14 @@ func (s *Service) UpdateBankAccount(b BankAccount) (BankAccount, dutil.Error) {
 			Status: r.StatusCode,
 			Errors: res.Errors,
 		}
-		return BankAccount{}, e
+		return Account{}, e
 	}
 	// return bank account on successful
-	return res.Data.BankAccount, nil
+	return res.Data.Account, nil
 }
 
-// DeleteBankAccount deletes a specific bank account's data.
-func (s *Service) DeleteBankAccount(UUID uuid.UUID) dutil.Error {
+// DeleteAccount deletes a specific bank account's data.
+func (s *Service) DeleteAccount(UUID uuid.UUID) dutil.Error {
 	// set path
 	s.serv.URL.Path = "/bank-account/-"
 	qs := url.Values{"uuid": {UUID.String()}}

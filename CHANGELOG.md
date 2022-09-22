@@ -44,22 +44,22 @@ based on the user's UUID.
   - `EqualTransaction` and `EqualTransactions`.
 - The CRUD Transaction methods.
   - `CreateTransaction` to create a new transaction.
-  - `GetBankAccountTransactions` to get all the transactions for a bank account.
+  - `GetAccountTransactions` to get all the transactions for a bank account.
   - `UpdateTransaction` to update a transaction.
   - `DeleteTransaction` to delete a transaction.
 
 ### Updated
-- Transaction to have an `AccountUUID` instead of `BankAccountUUID` for a more
+- Transaction to have an `AccountUUID` instead of `AccountUUID` for a more
 generic description.
 
 ## [0.3.0] - 2022-06-17
 ### Added
 - The CRUD Bank Account methods.
-  - `CreateBankAccount` to create a new bank account.
-  - `UpdateBankAccount` to update a bank account.
-  - `DeleteBankAccount` to delete a bank account.
-  - `GetUserBankAccounts` to get all the users bank accounts.
-  - `GetOrganisationBankAccounts` to get all the organisations bank accounts.
+  - `CreateAccount` to create a new bank account.
+  - `UpdateAccount` to update a bank account.
+  - `DeleteAccount` to delete a bank account.
+  - `GetUserAccounts` to get all the users bank accounts.
+  - `GetOrganisationAccounts` to get all the organisations bank accounts.
 
 ## [0.2.0] - 2022-06-14
 ### Added
@@ -72,7 +72,7 @@ msp instance.
 ### Added
 - Some basic types
   - Bank
-  - BankAccount
+  - Account
   - Transaction
   - Item
   - Tag
