@@ -42,7 +42,7 @@ type Items []Item
 
 type Transaction struct {
 	UUID        uuid.UUID `json:"uuid"`
-	AccountUUID uuid.UUID `json:"bank_account_uuid"`
+	AccountUUID uuid.UUID `json:"account_uuid"`
 	Date        time.Time `json:"date"`
 	Description string    `json:"description"`
 	Items       []Item    `json:"items"`

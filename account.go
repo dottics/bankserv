@@ -24,7 +24,7 @@ func (s *Service) GetUserAccounts(UUID uuid.UUID) (Accounts, dutil.Error) {
 
 	// response structure
 	type Data struct {
-		Accounts `json:"bank_accounts"`
+		Accounts `json:"accounts"`
 	}
 	res := struct {
 		Data   `json:"data"`
@@ -64,7 +64,7 @@ func (s *Service) GetOrganisationAccounts(UUID uuid.UUID) (Accounts, dutil.Error
 	}
 
 	type Data struct {
-		Accounts `json:"bank_accounts"`
+		Accounts `json:"accounts"`
 	}
 	res := struct {
 		Data   `json:"data"`
@@ -107,7 +107,7 @@ func (s *Service) CreateAccount(b Account) (Account, dutil.Error) {
 	}
 
 	type Data struct {
-		Account `json:"bank_account"`
+		Account `json:"account"`
 	}
 	res := struct {
 		Data   `json:"data"`
@@ -146,7 +146,7 @@ func (s *Service) UpdateAccount(b Account) (Account, dutil.Error) {
 	}
 
 	type Data struct {
-		Account `json:"bank_account"`
+		Account `json:"account"`
 	}
 	res := struct {
 		Data   `json:"data"`
