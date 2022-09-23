@@ -70,6 +70,9 @@ func EqualItems(a, b Items) bool {
 }
 
 // EqualTransaction reports whether a and b represents the same Transaction.
+//
+// Cannot do direct equality, because the Items' field is a slice that does not
+// support direct equality.
 func EqualTransaction(a, b Transaction) bool {
 	if a.UUID != b.UUID {
 		return false
@@ -81,6 +84,9 @@ func EqualTransaction(a, b Transaction) bool {
 		return false
 	}
 	if a.Description != b.Description {
+		return false
+	}
+	if a.BusinessName != b.BusinessName {
 		return false
 	}
 	if a.Active != b.Active {
