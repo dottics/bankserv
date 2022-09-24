@@ -30,7 +30,9 @@ type Item struct {
 	UUID            uuid.UUID `json:"uuid"`
 	TransactionUUID uuid.UUID `json:"transaction_uuid"`
 	Description     string    `json:"description"`
-	SKU             float32   `json:"sku"`
+	SKU             string    `json:"sku"`
+	Unit            string    `json:"unit"`
+	Quantity        float32   `json:"quantity"`
 	Amount          float32   `json:"amount"`
 	Discount        float32   `json:"discount"`
 	Tags            []Tag     `json:"tags"`
@@ -46,6 +48,9 @@ type Transaction struct {
 	Date         time.Time `json:"date"`
 	BusinessName string    `json:"business_name"`
 	Description  string    `json:"description"`
+	Debit        bool      `json:"debit"`
+	Credit       bool      `json:"credit"`
+	Amount       float32   `json:"amount"`
 	Items        []Item    `json:"items"`
 	Active       bool      `json:"active"`
 	CreateDate   time.Time `json:"create_date"`

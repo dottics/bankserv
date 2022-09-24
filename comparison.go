@@ -40,6 +40,12 @@ func EqualItem(a, b Item) bool {
 	if a.SKU != b.SKU {
 		return false
 	}
+	if a.Unit != b.Unit {
+		return false
+	}
+	if a.Quantity != b.Quantity {
+		return false
+	}
 	if a.Active != b.Active {
 		return false
 	}
@@ -87,6 +93,15 @@ func EqualTransaction(a, b Transaction) bool {
 		return false
 	}
 	if a.BusinessName != b.BusinessName {
+		return false
+	}
+	if a.Debit != b.Debit {
+		return false
+	}
+	if a.Credit != b.Credit {
+		return false
+	}
+	if a.Amount != b.Amount {
 		return false
 	}
 	if a.Active != b.Active {
