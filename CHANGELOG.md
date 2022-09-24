@@ -5,6 +5,19 @@ The format is based on [Keep a changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.10.0] - 2022-09-24
+### Updated
+- `Transaction` to have new fields
+  - `Debit` increases the account asset.
+  - `Crebit` decreases the account asset.
+  - `Amount` the value and validation value with which the account asset
+  increases or decreases.
+- `Item` to have new fields.
+  - `SKU` is the stock keeping units or unique reference such as a barcode.
+  - `Unit` the smallest measurement of the item.
+  - `Quantity` the number of units the item consists of.
+- Update the `Service` methods related to these types.
+
 ## [0.9.1] - 2022-09-23
 ### Updated
 - Updated the `Transaction` type to include a `BusinessName` field.
