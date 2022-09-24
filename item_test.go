@@ -103,6 +103,7 @@ func TestService_CreateItem(t *testing.T) {
 
 	s := NewService("")
 	ms := microtest.MockServer(s.serv)
+	defer ms.Server.Close()
 
 	for i, tc := range tt {
 		name := fmt.Sprintf("%d %s", i, tc.name)
@@ -215,6 +216,7 @@ func TestService_UpdateItem(t *testing.T) {
 
 	s := NewService("")
 	ms := microtest.MockServer(s.serv)
+	defer ms.Server.Close()
 
 	for i, tc := range tt {
 		name := fmt.Sprintf("%d %s", i, tc.name)
@@ -287,6 +289,7 @@ func TestService_DeleteItem(t *testing.T) {
 
 	s := NewService("")
 	ms := microtest.MockServer(s.serv)
+	defer ms.Server.Close()
 
 	for i, tc := range tt {
 		name := fmt.Sprintf("%d %s", i, tc.name)
@@ -302,9 +305,214 @@ func TestService_DeleteItem(t *testing.T) {
 }
 
 func TestService_AddItemTags(t *testing.T) {
-	t.Errorf("RED")
+	tests := []struct {
+		name     string
+		UUID     uuid.UUID
+		xTagUUID []uuid.UUID
+		exchange *microtest.Exchange
+		item     Item
+		e        dutil.Error
+	}{
+		{
+			name: "permission required",
+			UUID: uuid.MustParse("b5b3df71-d3cc-4069-9912-a0e7237aee2b"),
+			xTagUUID: []uuid.UUID{
+				uuid.MustParse("11982575-1b9f-4f67-88fa-4a3228119044"),
+				uuid.MustParse("91499027-ad4d-4cea-b18e-4a8d474e0874"),
+			},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 403,
+					Body:   `{"message":"Forbidden: Unable to process request","data":{},"errors":{"permission":["Please ensure you have permission"]}}`,
+				},
+			},
+			item: Item{},
+			e: &dutil.Err{
+				Status: 403,
+				Errors: map[string][]string{
+					"permission": {"Please ensure you have permission"},
+				},
+			},
+		},
+		{
+			name: "not found",
+			UUID: uuid.MustParse("b5b3df71-d3cc-4069-9912-a0e7237aee2b"),
+			xTagUUID: []uuid.UUID{
+				uuid.MustParse("11982575-1b9f-4f67-88fa-4a3228119044"),
+				uuid.MustParse("91499027-ad4d-4cea-b18e-4a8d474e0874"),
+			},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 404,
+					Body:   `{"message":"NotFound: Unable to process request","data":{},"errors":{"item":["not found"]}}`,
+				},
+			},
+			item: Item{},
+			e: &dutil.Err{
+				Status: 404,
+				Errors: map[string][]string{
+					"item": {"not found"},
+				},
+			},
+		},
+		{
+			name: "item tags added",
+			UUID: uuid.MustParse("b5b3df71-d3cc-4069-9912-a0e7237aee2b"),
+			xTagUUID: []uuid.UUID{
+				uuid.MustParse("11982575-1b9f-4f67-88fa-4a3228119044"),
+				uuid.MustParse("91499027-ad4d-4cea-b18e-4a8d474e0874"),
+			},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 200,
+					Body:   `{"message":"item tags removed","data":{"item":{"uuid":"b5b3df71-d3cc-4069-9912-a0e7237aee2b","transaction_uuid":"2b5b5fe0-ba22-4f7f-b1de-499472193202","description":"jbl flip se 2","sku":"barcode","unit":"unit","quantity":1,"amount":2400,"discount":0,"active":true,"create_date":"2022-09-24T10:58:32.000Z","update_date":"2022-09-24T10:58:51.000Z","tags":[{"uuid":"11982575-1b9f-4f67-88fa-4a3228119044","tag":"music"},{"uuid":"91499027-ad4d-4cea-b18e-4a8d474e0874","tag":"technology"}]}},"errors":{}}`,
+				},
+			},
+			item: Item{
+				UUID:            uuid.MustParse("b5b3df71-d3cc-4069-9912-a0e7237aee2b"),
+				TransactionUUID: uuid.MustParse("2b5b5fe0-ba22-4f7f-b1de-499472193202"),
+				Description:     "jbl flip se 2",
+				SKU:             "barcode",
+				Unit:            "unit",
+				Quantity:        1,
+				Amount:          2400,
+				Discount:        0,
+				Tags: Tags{
+					Tag{
+						UUID: uuid.MustParse("11982575-1b9f-4f67-88fa-4a3228119044"),
+						Tag:  "music",
+					},
+					Tag{
+						UUID: uuid.MustParse("91499027-ad4d-4cea-b18e-4a8d474e0874"),
+						Tag:  "technology",
+					},
+				},
+				Active:     true,
+				CreateDate: timeMustParse("2022-09-24T10:58:32.000Z"),
+				UpdateDate: timeMustParse("2022-09-24T10:58:51.000Z"),
+			},
+			e: nil,
+		},
+	}
+
+	s := NewService("")
+	ms := microtest.MockServer(s.serv)
+	defer ms.Server.Close()
+
+	for i, tc := range tests {
+		name := fmt.Sprintf("%d %s", i, tc.name)
+		t.Run(name, func(t *testing.T) {
+			ms.Append(tc.exchange)
+			item, e := s.AddItemTags(tc.UUID, tc.xTagUUID)
+			if !EqualItem(item, tc.item) {
+				t.Errorf("expected item %v got %v", tc.item, item)
+			}
+			if !dutil.ErrorEqual(tc.e, e) {
+				t.Errorf("expected error %v got %v", tc.e, e)
+			}
+		})
+	}
 }
 
 func TestService_RemoveItemTags(t *testing.T) {
-	t.Errorf("RED")
+	tests := []struct {
+		name     string
+		UUID     uuid.UUID
+		xTagUUID []uuid.UUID
+		exchange *microtest.Exchange
+		item     Item
+		e        dutil.Error
+	}{
+		{
+			name: "permission required",
+			UUID: uuid.MustParse("b5b3df71-d3cc-4069-9912-a0e7237aee2b"),
+			xTagUUID: []uuid.UUID{
+				uuid.MustParse("11982575-1b9f-4f67-88fa-4a3228119044"),
+				uuid.MustParse("91499027-ad4d-4cea-b18e-4a8d474e0874"),
+			},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 403,
+					Body:   `{"message":"Forbidden: Unable to process request","data":{},"errors":{"permission":["Please ensure you have permission"]}}`,
+				},
+			},
+			item: Item{},
+			e: &dutil.Err{
+				Status: 403,
+				Errors: map[string][]string{
+					"permission": {"Please ensure you have permission"},
+				},
+			},
+		},
+		{
+			name: "not found",
+			UUID: uuid.MustParse("b5b3df71-d3cc-4069-9912-a0e7237aee2b"),
+			xTagUUID: []uuid.UUID{
+				uuid.MustParse("11982575-1b9f-4f67-88fa-4a3228119044"),
+				uuid.MustParse("91499027-ad4d-4cea-b18e-4a8d474e0874"),
+			},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 404,
+					Body:   `{"message":"NotFound: Unable to process request","data":{},"errors":{"item":["not found"]}}`,
+				},
+			},
+			item: Item{},
+			e: &dutil.Err{
+				Status: 404,
+				Errors: map[string][]string{
+					"item": {"not found"},
+				},
+			},
+		},
+		{
+			name: "item tags removed",
+			UUID: uuid.MustParse("b5b3df71-d3cc-4069-9912-a0e7237aee2b"),
+			xTagUUID: []uuid.UUID{
+				uuid.MustParse("11982575-1b9f-4f67-88fa-4a3228119044"),
+				uuid.MustParse("91499027-ad4d-4cea-b18e-4a8d474e0874"),
+			},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 200,
+					Body:   `{"message":"item tags removed","data":{"item":{"uuid":"b5b3df71-d3cc-4069-9912-a0e7237aee2b","transaction_uuid":"2b5b5fe0-ba22-4f7f-b1de-499472193202","description":"jbl flip se 2","sku":"barcode","unit":"unit","quantity":1,"amount":2400,"discount":0,"active":true,"create_date":"2022-09-24T10:58:32.000Z","update_date":"2022-09-24T10:58:51.000Z","tags":[{"tag":"one"}]}},"errors":{}}`,
+				},
+			},
+			item: Item{
+				UUID:            uuid.MustParse("b5b3df71-d3cc-4069-9912-a0e7237aee2b"),
+				TransactionUUID: uuid.MustParse("2b5b5fe0-ba22-4f7f-b1de-499472193202"),
+				Description:     "jbl flip se 2",
+				SKU:             "barcode",
+				Unit:            "unit",
+				Quantity:        1,
+				Amount:          2400,
+				Discount:        0,
+				Tags: Tags{
+					Tag{Tag: "one"},
+				},
+				Active:     true,
+				CreateDate: timeMustParse("2022-09-24T10:58:32.000Z"),
+				UpdateDate: timeMustParse("2022-09-24T10:58:51.000Z"),
+			},
+			e: nil,
+		},
+	}
+
+	s := NewService("")
+	ms := microtest.MockServer(s.serv)
+	defer ms.Server.Close()
+
+	for i, tc := range tests {
+		name := fmt.Sprintf("%d %s", i, tc.name)
+		t.Run(name, func(t *testing.T) {
+			ms.Append(tc.exchange)
+			item, e := s.RemoveItemTags(tc.UUID, tc.xTagUUID)
+			if !EqualItem(item, tc.item) {
+				t.Errorf("expected item %v got %v", tc.item, item)
+			}
+			if !dutil.ErrorEqual(tc.e, e) {
+				t.Errorf("expected error %v got %v", tc.e, e)
+			}
+		})
+	}
 }

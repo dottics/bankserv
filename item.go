@@ -121,13 +121,88 @@ func (s *Service) DeleteItem(UUID uuid.UUID) dutil.Error {
 // AddItemTags takes an Item UUID and a slice of Tag UUID's then exchanges with
 // the microservice to get the new Item. It returns the Item value pointed to
 // or and error if an error occurs.
-func (s *Service) AddItemTags(itemUUID uuid.UUID, tagsUUID []uuid.UUID) (*Item, dutil.Error) {
-	return nil, nil
+func (s *Service) AddItemTags(itemUUID uuid.UUID, tagsUUID []uuid.UUID) (Item, dutil.Error) {
+	// set path
+	s.serv.URL.Path = "/item/-/tag"
+	payload := struct {
+		UUID     uuid.UUID   `json:"uuid"`
+		TagUUIDs []uuid.UUID `json:"tag_uuids"`
+	}{
+		UUID:     itemUUID,
+		TagUUIDs: tagsUUID,
+	}
+	p, e := dutil.MarshalReader(payload)
+	if e != nil {
+		return Item{}, e
+	}
+	// do request
+	r, e := s.serv.NewRequest("POST", s.serv.URL.String(), nil, p)
+	if e != nil {
+		return Item{}, e
+	}
+	// decode the response
+	type Data struct {
+		Item Item `json:"item"`
+	}
+	res := struct {
+		Data   Data         `json:"data"`
+		Errors dutil.Errors `json:"errors"`
+	}{}
+	_, e = s.serv.Decode(r, &res)
+	if e != nil {
+		return Item{}, e
+	}
+
+	if r.StatusCode != 200 {
+		e := &dutil.Err{
+			Status: r.StatusCode,
+			Errors: res.Errors,
+		}
+		return Item{}, e
+	}
+	return res.Data.Item, nil
 }
 
 // RemoveItemTags takes an Item UUID and Tag UUID's then exchanges with the
 // bank microservice to remove the items from the Item. It returns the Item
 // value pointed to or an error if an error occurs.
-func (s *Service) RemoveItemTags(itemUUID uuid.UUID, tagsUUID []uuid.UUID) (*Item, dutil.Error) {
-	return nil, nil
+func (s *Service) RemoveItemTags(itemUUID uuid.UUID, tagsUUID []uuid.UUID) (Item, dutil.Error) {
+	// set path
+	s.serv.URL.Path = "/item/-/tag"
+	// set query string
+	xTagUUID := make([]string, 0)
+	for _, tagUUID := range tagsUUID {
+		xTagUUID = append(xTagUUID, tagUUID.String())
+	}
+	qs := url.Values{
+		"uuid":      []string{itemUUID.String()},
+		"tag_uuids": xTagUUID,
+	}
+	s.serv.URL.RawQuery = qs.Encode()
+	// do request
+	r, e := s.serv.NewRequest("DELETE", s.serv.URL.String(), nil, nil)
+	if e != nil {
+		return Item{}, e
+	}
+	// decode the response
+	type Data struct {
+		Item Item `json:"item"`
+	}
+	res := struct {
+		Data   Data         `json:"data"`
+		Errors dutil.Errors `json:"errors"`
+	}{}
+	_, e = s.serv.Decode(r, &res)
+	if e != nil {
+		return Item{}, e
+	}
+
+	if r.StatusCode != 200 {
+		e := &dutil.Err{
+			Status: r.StatusCode,
+			Errors: res.Errors,
+		}
+		return Item{}, e
+	}
+	return res.Data.Item, nil
 }
