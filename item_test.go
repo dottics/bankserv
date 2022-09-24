@@ -80,7 +80,7 @@ func TestService_CreateItem(t *testing.T) {
 			exchange: &microtest.Exchange{
 				Response: microtest.Response{
 					Status: 201,
-					Body:   `{"message":"item created","data":{"item":{"uuid":"b5b3df71-d3cc-4069-9912-a0e7237aee2b","description":"Sasko Brown Bread","sku":2,"amount":12.3,"discount":1.23,"tags":[],"active":true,"create_date":"2022-06-19T15:43:01Z","update_date":"2022-06-19T15:43:01Z"}},"errors":{}}`,
+					Body:   `{"message":"item created","data":{"item":{"uuid":"b5b3df71-d3cc-4069-9912-a0e7237aee2b","description":"Sasko Brown Bread","sku":"barcode-here","unit":"m/s","quantity":21.1,"amount":12.3,"discount":1.23,"tags":[],"active":true,"create_date":"2022-06-19T15:43:01Z","update_date":"2022-06-19T15:43:01Z"}},"errors":{}}`,
 				},
 			},
 			EItem: Item{
@@ -192,7 +192,7 @@ func TestService_UpdateItem(t *testing.T) {
 			exchange: &microtest.Exchange{
 				Response: microtest.Response{
 					Status: 200,
-					Body:   `{"message":"item updated","data":{"item":{"uuid":"b5b3df71-d3cc-4069-9912-a0e7237aee2b","transaction_uuid":"00000000-0000-0000-0000-000000000000","description":"Sasko White Bread","sku":4,"amount":14.3,"discount":1.43,"tags":[],"active":true,"create_date":"2022-06-19T15:43:01Z","update_date":"2022-06-19T15:43:01Z"}},"errors":{}}`,
+					Body:   `{"message":"item updated","data":{"item":{"uuid":"b5b3df71-d3cc-4069-9912-a0e7237aee2b","transaction_uuid":"00000000-0000-0000-0000-000000000000","description":"Sasko White Bread","sku":"barcode-here","unit":"m/s","quantity":21.1,"amount":14.3,"discount":1.43,"tags":[],"active":true,"create_date":"2022-06-19T15:43:01Z","update_date":"2022-06-19T15:43:01Z"}},"errors":{}}`,
 				},
 			},
 			EItem: Item{
