@@ -5,6 +5,11 @@ The format is based on [Keep a changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.11.0] - 2022-09-24
+### Added
+- `AddItemTags` method to add tags to an item.
+- `RemoveItemTags` method to remove tags from an item.
+
 ## [0.10.0] - 2022-09-24
 ### Updated
 - `Transaction` to have new fields

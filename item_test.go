@@ -300,3 +300,11 @@ func TestService_DeleteItem(t *testing.T) {
 		})
 	}
 }
+
+func TestService_AddItemTags(t *testing.T) {
+	t.Errorf("RED")
+}
+
+func TestService_RemoveItemTags(t *testing.T) {
+	t.Errorf("RED")
+}

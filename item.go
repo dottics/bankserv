@@ -117,3 +117,17 @@ func (s *Service) DeleteItem(UUID uuid.UUID) dutil.Error {
 	}
 	return nil
 }
+
+// AddItemTags takes an Item UUID and a slice of Tag UUID's then exchanges with
+// the microservice to get the new Item. It returns the Item value pointed to
+// or and error if an error occurs.
+func (s *Service) AddItemTags(itemUUID uuid.UUID, tagsUUID []uuid.UUID) (*Item, dutil.Error) {
+	return nil, nil
+}
+
+// RemoveItemTags takes an Item UUID and Tag UUID's then exchanges with the
+// bank microservice to remove the items from the Item. It returns the Item
+// value pointed to or an error if an error occurs.
+func (s *Service) RemoveItemTags(itemUUID uuid.UUID, tagsUUID []uuid.UUID) (*Item, dutil.Error) {
+	return nil, nil
+}
