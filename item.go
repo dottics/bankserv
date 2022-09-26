@@ -168,7 +168,7 @@ func (s *Service) AddItemTags(itemUUID uuid.UUID, tagsUUID []uuid.UUID) (Item, d
 // value pointed to or an error if an error occurs.
 func (s *Service) RemoveItemTags(itemUUID uuid.UUID, tagsUUID []uuid.UUID) (Item, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/item/-/tag"
+	s.serv.URL.Path = "/item/-/tag/-"
 	// set query string
 	xTagUUID := make([]string, 0)
 	for _, tagUUID := range tagsUUID {
