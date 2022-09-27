@@ -402,7 +402,7 @@ func TestService_UpdateTransaction(t *testing.T) {
 			exchange: &microtest.Exchange{
 				Response: microtest.Response{
 					Status: 200,
-					Body:   `{"message":"transaction updated","data":{"transaction":{"uuid":"7f408ea2-f5e5-4547-8f74-c33fe75c3081","account_uuid":"032203af-6002-4abc-9982-73c577add8df","date":"2022-06-19T13:27:19Z","business_name":"update business name","description":"UPDATE*TXN#TO#NEW#DESCR","debit":false,"credit":true,"amount":220,"items":[],"active":true,"create_date":"2022-06-18T15:49:58Z","update_date":"2022-06-18T15:50:06Z"}},"errors":{}}`,
+					Body:   `{"message":"transaction updated","data":{"transaction":{"uuid":"7f408ea2-f5e5-4547-8f74-c33fe75c3081","account_uuid":"6dedbdf5-84ad-435e-8a2f-26d929e18116","date":"2022-06-19T13:27:19Z","business_name":"update business name","description":"UPDATE*TXN#TO#NEW#DESCR","debit":false,"credit":true,"amount":220,"items":[],"active":true,"create_date":"2022-06-18T15:49:58Z","update_date":"2022-06-18T15:50:06Z"}},"errors":{}}`,
 				},
 			},
 			ETransaction: Transaction{
