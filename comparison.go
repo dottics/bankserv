@@ -83,10 +83,9 @@ func EqualTransaction(a, b Transaction) bool {
 	if a.UUID != b.UUID {
 		return false
 	}
-	// TODO: Product Backlog #feat/35
-	//if a.AccountUUID != b.AccountUUID {
-	//	return false
-	//}
+	if a.AccountUUID != b.AccountUUID {
+		return false
+	}
 	if a.Date != b.Date {
 		return false
 	}
