@@ -5,6 +5,11 @@ The format is based on [Keep a changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.11.2] - 2022-09-26
+### Updated
+- Added the type `Transaction.AccountUUID` field, as this is  required to be 
+able to create a transaction.
+
 ## [0.11.1] - 2022-09-26
 ### Updated
 - Updated the type `Account`'s `AccountNumber string `json:"account_number"` to
