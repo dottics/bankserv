@@ -51,13 +51,13 @@ func TestService_GetAccountTransactions(t *testing.T) {
 			exchange: &microtest.Exchange{
 				Response: microtest.Response{
 					Status: 200,
-					Body:   `{"message":"","data":{"transactions":[{"uuid":"e4bd194d-41e7-4f27-a4a8-161685a9b8b8","date":"2022-06-18T15:26:22Z","business_name":"spar","description":"SUPERSPAR JEFFREYS BAYEASTERN CAPEZA","debit":true,"credit":false,"amount":325.99,"items":[{"uuid":null,"transaction_uuid":null,"description":"two","sku":"","unit":"","quantity":0,"amount":0,"discount":0,"tags":[{"uuid":null,"tag":"two","active":false,"create_date":"0001-01-01T00:00:00Z","update_date":"0001-01-01T00:00:00Z"}],"active":false,"create_date":"0001-01-01T00:00:00Z","update_date":"0001-01-01T00:00:00Z"}],"active":true,"create_date":"2022-06-18T15:49:58Z","update_date":"2022-06-18T15:50:06Z"},{"uuid":"d25ac3b1-0a8f-43a3-8da1-d2f22a814a82","account_uuid":"032203af-6002-4abc-9982-73c577add8df","date":"2022-06-18T15:26:22Z","business_name":"google","description":"GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB","debit":false,"credit":true,"amount":220,"items":[{"uuid":null,"transaction_uuid":null,"description":"one","sku":"","unit":"","quantity":0,"amount":0,"discount":0,"tags":[{"uuid":null,"tag":"one","active":false,"create_date":"0001-01-01T00:00:00Z","update_date":"0001-01-01T00:00:00Z"}],"active":false,"create_date":"0001-01-01T00:00:00Z","update_date":"0001-01-01T00:00:00Z"}],"active":true,"create_date":"2022-06-18T15:28:34Z","update_date":"2022-06-18T15:29:32Z"}]},"errors":{}}`,
+					Body:   `{"message":"","data":{"transactions":[{"uuid":"e4bd194d-41e7-4f27-a4a8-161685a9b8b8","account_uuid":"032203af-6002-4abc-9982-73c577add8df","date":"2022-06-18T15:26:22Z","business_name":"spar","description":"SUPERSPAR JEFFREYS BAYEASTERN CAPEZA","debit":true,"credit":false,"amount":325.99,"items":[{"uuid":null,"transaction_uuid":null,"description":"two","sku":"","unit":"","quantity":0,"amount":0,"discount":0,"tags":[{"uuid":null,"tag":"two","active":false,"create_date":"0001-01-01T00:00:00Z","update_date":"0001-01-01T00:00:00Z"}],"active":false,"create_date":"0001-01-01T00:00:00Z","update_date":"0001-01-01T00:00:00Z"}],"active":true,"create_date":"2022-06-18T15:49:58Z","update_date":"2022-06-18T15:50:06Z"},{"uuid":"d25ac3b1-0a8f-43a3-8da1-d2f22a814a82","account_uuid":"032203af-6002-4abc-9982-73c577add8df","date":"2022-06-18T15:26:22Z","business_name":"google","description":"GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB","debit":false,"credit":true,"amount":220,"items":[{"uuid":null,"transaction_uuid":null,"description":"one","sku":"","unit":"","quantity":0,"amount":0,"discount":0,"tags":[{"uuid":null,"tag":"one","active":false,"create_date":"0001-01-01T00:00:00Z","update_date":"0001-01-01T00:00:00Z"}],"active":false,"create_date":"0001-01-01T00:00:00Z","update_date":"0001-01-01T00:00:00Z"}],"active":true,"create_date":"2022-06-18T15:28:34Z","update_date":"2022-06-18T15:29:32Z"}]},"errors":{}}`,
 				},
 			},
 			transactions: Transactions{
 				{
-					UUID: uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
-					//AccountUUID:  uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+					UUID:         uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
+					AccountUUID:  uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 					Date:         timeMustParse("2022-06-18T15:26:22.000Z"),
 					BusinessName: "spar",
 					Description:  "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
@@ -77,8 +77,8 @@ func TestService_GetAccountTransactions(t *testing.T) {
 					},
 				},
 				{
-					UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-					//AccountUUID:  uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+					UUID:         uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+					AccountUUID:  uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 					Date:         timeMustParse("2022-06-18T15:26:22.000Z"),
 					BusinessName: "google",
 					Description:  "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
@@ -160,13 +160,13 @@ func TestService_GetUserTransactions(t *testing.T) {
 			exchange: &microtest.Exchange{
 				Response: microtest.Response{
 					Status: 200,
-					Body:   `{"message":"","data":{"transactions":[{"uuid":"e4bd194d-41e7-4f27-a4a8-161685a9b8b8","date":"2022-06-18T15:26:22Z","business_name":"spar","description":"SUPERSPAR JEFFREYS BAYEASTERN CAPEZA","debit":true,"credit":false,"amount":325.99,"items":[{"uuid":null,"transaction_uuid":null,"description":"two","sku":"","unit":"","quantity":0,"amount":0,"discount":0,"tags":[{"uuid":null,"tag":"two","active":false,"create_date":"0001-01-01T00:00:00Z","update_date":"0001-01-01T00:00:00Z"}],"active":false,"create_date":"0001-01-01T00:00:00Z","update_date":"0001-01-01T00:00:00Z"}],"active":true,"create_date":"2022-06-18T15:49:58Z","update_date":"2022-06-18T15:50:06Z"},{"uuid":"d25ac3b1-0a8f-43a3-8da1-d2f22a814a82","account_uuid":"032203af-6002-4abc-9982-73c577add8df","date":"2022-06-18T15:26:22Z","business_name":"google","description":"GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB","debit":false,"credit":true,"amount":220,"items":[{"uuid":null,"transaction_uuid":null,"description":"one","sku":"","unit":"","quantity":0,"amount":0,"discount":0,"tags":[{"uuid":null,"tag":"one","active":false,"create_date":"0001-01-01T00:00:00Z","update_date":"0001-01-01T00:00:00Z"}],"active":false,"create_date":"0001-01-01T00:00:00Z","update_date":"0001-01-01T00:00:00Z"}],"active":true,"create_date":"2022-06-18T15:28:34Z","update_date":"2022-06-18T15:29:32Z"}]},"errors":{}}`,
+					Body:   `{"message":"","data":{"transactions":[{"uuid":"e4bd194d-41e7-4f27-a4a8-161685a9b8b8","account_uuid":"032203af-6002-4abc-9982-73c577add8df","date":"2022-06-18T15:26:22Z","business_name":"spar","description":"SUPERSPAR JEFFREYS BAYEASTERN CAPEZA","debit":true,"credit":false,"amount":325.99,"items":[{"uuid":null,"transaction_uuid":null,"description":"two","sku":"","unit":"","quantity":0,"amount":0,"discount":0,"tags":[{"uuid":null,"tag":"two","active":false,"create_date":"0001-01-01T00:00:00Z","update_date":"0001-01-01T00:00:00Z"}],"active":false,"create_date":"0001-01-01T00:00:00Z","update_date":"0001-01-01T00:00:00Z"}],"active":true,"create_date":"2022-06-18T15:49:58Z","update_date":"2022-06-18T15:50:06Z"},{"uuid":"d25ac3b1-0a8f-43a3-8da1-d2f22a814a82","account_uuid":"032203af-6002-4abc-9982-73c577add8df","date":"2022-06-18T15:26:22Z","business_name":"google","description":"GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB","debit":false,"credit":true,"amount":220,"items":[{"uuid":null,"transaction_uuid":null,"description":"one","sku":"","unit":"","quantity":0,"amount":0,"discount":0,"tags":[{"uuid":null,"tag":"one","active":false,"create_date":"0001-01-01T00:00:00Z","update_date":"0001-01-01T00:00:00Z"}],"active":false,"create_date":"0001-01-01T00:00:00Z","update_date":"0001-01-01T00:00:00Z"}],"active":true,"create_date":"2022-06-18T15:28:34Z","update_date":"2022-06-18T15:29:32Z"}]},"errors":{}}`,
 				},
 			},
 			transactions: Transactions{
 				{
-					UUID: uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
-					//AccountUUID:  uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+					UUID:         uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
+					AccountUUID:  uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 					Date:         timeMustParse("2022-06-18T15:26:22.000Z"),
 					BusinessName: "spar",
 					Description:  "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
@@ -186,8 +186,8 @@ func TestService_GetUserTransactions(t *testing.T) {
 					},
 				},
 				{
-					UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-					//AccountUUID:  uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+					UUID:         uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+					AccountUUID:  uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 					Date:         timeMustParse("2022-06-18T15:26:22.000Z"),
 					BusinessName: "google",
 					Description:  "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
@@ -248,7 +248,7 @@ func TestService_CreateTransaction(t *testing.T) {
 				},
 			},
 			transaction: Transaction{
-				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
 				Debit:       false,
@@ -266,7 +266,7 @@ func TestService_CreateTransaction(t *testing.T) {
 		{
 			name: "bad request",
 			transaction: Transaction{
-				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
 				Debit:       false,
@@ -290,7 +290,7 @@ func TestService_CreateTransaction(t *testing.T) {
 		{
 			name: "create transaction",
 			transaction: Transaction{
-				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
 				Debit:       false,
@@ -300,12 +300,12 @@ func TestService_CreateTransaction(t *testing.T) {
 			exchange: &microtest.Exchange{
 				Response: microtest.Response{
 					Status: 201,
-					Body:   `{"message":"transaction created","data":{"transaction":{"uuid":"e4bd194d-41e7-4f27-a4a8-161685a9b8b8","date":"2022-06-18T15:26:22Z","business_name":"spar","description":"SUPERSPAR JEFFREYS BAYEASTERN CAPEZA","debit":false,"credit":true,"amount":220,"items":[],"active":true,"create_date":"2022-06-18T15:49:58Z","update_date":"2022-06-18T15:50:06Z"}},"errors":{}}`,
+					Body:   `{"message":"transaction created","data":{"transaction":{"uuid":"e4bd194d-41e7-4f27-a4a8-161685a9b8b8","account_uuid":"032203af-6002-4abc-9982-73c577add8df","date":"2022-06-18T15:26:22Z","business_name":"spar","description":"SUPERSPAR JEFFREYS BAYEASTERN CAPEZA","debit":false,"credit":true,"amount":220,"items":[],"active":true,"create_date":"2022-06-18T15:49:58Z","update_date":"2022-06-18T15:50:06Z"}},"errors":{}}`,
 				},
 			},
 			ETransaction: Transaction{
-				UUID: uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
-				//AccountUUID:  uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID:         uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
+				AccountUUID:  uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:         timeMustParse("2022-06-18T15:26:22.000Z"),
 				BusinessName: "spar",
 				Description:  "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
@@ -402,12 +402,12 @@ func TestService_UpdateTransaction(t *testing.T) {
 			exchange: &microtest.Exchange{
 				Response: microtest.Response{
 					Status: 200,
-					Body:   `{"message":"transaction updated","data":{"transaction":{"uuid":"7f408ea2-f5e5-4547-8f74-c33fe75c3081","date":"2022-06-19T13:27:19Z","business_name":"update business name","description":"UPDATE*TXN#TO#NEW#DESCR","debit":false,"credit":true,"amount":220,"items":[],"active":true,"create_date":"2022-06-18T15:49:58Z","update_date":"2022-06-18T15:50:06Z"}},"errors":{}}`,
+					Body:   `{"message":"transaction updated","data":{"transaction":{"uuid":"7f408ea2-f5e5-4547-8f74-c33fe75c3081","account_uuid":"032203af-6002-4abc-9982-73c577add8df","date":"2022-06-19T13:27:19Z","business_name":"update business name","description":"UPDATE*TXN#TO#NEW#DESCR","debit":false,"credit":true,"amount":220,"items":[],"active":true,"create_date":"2022-06-18T15:49:58Z","update_date":"2022-06-18T15:50:06Z"}},"errors":{}}`,
 				},
 			},
 			ETransaction: Transaction{
-				UUID: uuid.MustParse("7f408ea2-f5e5-4547-8f74-c33fe75c3081"),
-				//AccountUUID:  uuid.MustParse("6dedbdf5-84ad-435e-8a2f-26d929e18116"),
+				UUID:         uuid.MustParse("7f408ea2-f5e5-4547-8f74-c33fe75c3081"),
+				AccountUUID:  uuid.MustParse("6dedbdf5-84ad-435e-8a2f-26d929e18116"),
 				BusinessName: "update business name",
 				Description:  "UPDATE*TXN#TO#NEW#DESCR",
 				Debit:        false,
