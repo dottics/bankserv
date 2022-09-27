@@ -646,43 +646,44 @@ func TestEqualTransaction(t *testing.T) {
 			},
 			o: false,
 		},
-		{
-			name: "different Account UUID",
-			a: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
-			},
-			b: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("5ed51d15-d033-4a4f-9a5a-a060bb9fc467"),
-			},
-			o: false,
-		},
+		// TODO: Product Backlog #feat/35
+		//{
+		//	name: "different Account UUID",
+		//	a: Transaction{
+		//		UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+		//		AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+		//	},
+		//	b: Transaction{
+		//		UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+		//		AccountUUID: uuid.MustParse("5ed51d15-d033-4a4f-9a5a-a060bb9fc467"),
+		//	},
+		//	o: false,
+		//},
 		{
 			name: "different Date",
 			a: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
-				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				Date: timeMustParse("2022-06-18T15:26:22.000Z"),
 			},
 			b: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
-				Date:        timeMustParse("2022-06-18T15:26:35.000Z"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				Date: timeMustParse("2022-06-18T15:26:35.000Z"),
 			},
 			o: false,
 		},
 		{
 			name: "different Description",
 			a: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 			},
 			b: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
 			},
@@ -691,15 +692,15 @@ func TestEqualTransaction(t *testing.T) {
 		{
 			name: "different Debit",
 			a: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 				Debit:       true,
 			},
 			b: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
 				Debit:       false,
@@ -709,16 +710,16 @@ func TestEqualTransaction(t *testing.T) {
 		{
 			name: "different Credit",
 			a: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 				Debit:       true,
 				Credit:      false,
 			},
 			b: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
 				Debit:       false,
@@ -729,8 +730,8 @@ func TestEqualTransaction(t *testing.T) {
 		{
 			name: "different Amount",
 			a: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 				Debit:       true,
@@ -738,8 +739,8 @@ func TestEqualTransaction(t *testing.T) {
 				Amount:      325.99,
 			},
 			b: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
 				Debit:       false,
@@ -751,8 +752,8 @@ func TestEqualTransaction(t *testing.T) {
 		{
 			name: "different Active",
 			a: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 				Debit:       true,
@@ -761,8 +762,8 @@ func TestEqualTransaction(t *testing.T) {
 				Active:      true,
 			},
 			b: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 				Debit:       true,
@@ -775,8 +776,8 @@ func TestEqualTransaction(t *testing.T) {
 		{
 			name: "different CreateDate",
 			a: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 				Debit:       true,
@@ -786,8 +787,8 @@ func TestEqualTransaction(t *testing.T) {
 				CreateDate:  timeMustParse("2022-06-18T15:28:34.000Z"),
 			},
 			b: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 				Debit:       true,
@@ -801,8 +802,8 @@ func TestEqualTransaction(t *testing.T) {
 		{
 			name: "different UpdateDate",
 			a: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 				Debit:       true,
@@ -813,8 +814,8 @@ func TestEqualTransaction(t *testing.T) {
 				UpdateDate:  timeMustParse("2022-06-18T15:29:32.000Z"),
 			},
 			b: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 				Debit:       true,
@@ -829,8 +830,8 @@ func TestEqualTransaction(t *testing.T) {
 		{
 			name: "same Transaction",
 			a: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 				Debit:       true,
@@ -841,8 +842,8 @@ func TestEqualTransaction(t *testing.T) {
 				UpdateDate:  timeMustParse("2022-06-18T15:29:32.000Z"),
 			},
 			b: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 				Debit:       true,
@@ -857,8 +858,8 @@ func TestEqualTransaction(t *testing.T) {
 		{
 			name: "different Items",
 			a: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 				Debit:       true,
@@ -872,8 +873,8 @@ func TestEqualTransaction(t *testing.T) {
 				},
 			},
 			b: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 				Debit:       true,
@@ -891,8 +892,8 @@ func TestEqualTransaction(t *testing.T) {
 		{
 			name: "different Item Tags",
 			a: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 				Debit:       true,
@@ -911,8 +912,8 @@ func TestEqualTransaction(t *testing.T) {
 				},
 			},
 			b: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 				Debit:       true,
@@ -935,8 +936,8 @@ func TestEqualTransaction(t *testing.T) {
 		{
 			name: "equal down to tags",
 			a: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 				Debit:       true,
@@ -955,8 +956,8 @@ func TestEqualTransaction(t *testing.T) {
 				},
 			},
 			b: Transaction{
-				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 				Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 				Debit:       true,
@@ -1000,8 +1001,8 @@ func TestEqualTransactions(t *testing.T) {
 			name: "different lengths",
 			a: Transactions{
 				{
-					UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-					AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+					UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+					//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 					Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 					Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 					Debit:       true,
@@ -1020,8 +1021,8 @@ func TestEqualTransactions(t *testing.T) {
 					},
 				},
 				{
-					UUID:        uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
-					AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+					UUID: uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
+					//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 					Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 					Description: "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
 					Debit:       true,
@@ -1042,8 +1043,8 @@ func TestEqualTransactions(t *testing.T) {
 			},
 			b: Transactions{
 				{
-					UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-					AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+					UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+					//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 					Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 					Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 					Debit:       true,
@@ -1068,8 +1069,8 @@ func TestEqualTransactions(t *testing.T) {
 			name: "different transaction order",
 			a: Transactions{
 				{
-					UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-					AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+					UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+					//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 					Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 					Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 					Debit:       true,
@@ -1088,8 +1089,8 @@ func TestEqualTransactions(t *testing.T) {
 					},
 				},
 				{
-					UUID:        uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
-					AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+					UUID: uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
+					//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 					Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 					Description: "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
 					Debit:       true,
@@ -1110,8 +1111,8 @@ func TestEqualTransactions(t *testing.T) {
 			},
 			b: Transactions{
 				{
-					UUID:        uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
-					AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+					UUID: uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
+					//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 					Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 					Description: "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
 					Debit:       true,
@@ -1130,8 +1131,8 @@ func TestEqualTransactions(t *testing.T) {
 					},
 				},
 				{
-					UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-					AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+					UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+					//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 					Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 					Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 					Debit:       true,
@@ -1156,8 +1157,8 @@ func TestEqualTransactions(t *testing.T) {
 			name: "different transaction elements",
 			a: Transactions{
 				{
-					UUID:        uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
-					AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+					UUID: uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
+					//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 					Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 					Description: "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
 					Debit:       true,
@@ -1176,8 +1177,8 @@ func TestEqualTransactions(t *testing.T) {
 					},
 				},
 				{
-					UUID:        uuid.MustParse("5ed51d15-d033-4a4f-9a5a-a060bb9fc467"),
-					AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+					UUID: uuid.MustParse("5ed51d15-d033-4a4f-9a5a-a060bb9fc467"),
+					//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 					Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 					Description: "ANOTHER TXN DESCRIPTION",
 					Debit:       true,
@@ -1198,8 +1199,8 @@ func TestEqualTransactions(t *testing.T) {
 			},
 			b: Transactions{
 				{
-					UUID:        uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
-					AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+					UUID: uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
+					//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 					Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 					Description: "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
 					Debit:       true,
@@ -1218,8 +1219,8 @@ func TestEqualTransactions(t *testing.T) {
 					},
 				},
 				{
-					UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-					AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+					UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+					//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 					Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 					Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 					Debit:       true,
@@ -1244,8 +1245,8 @@ func TestEqualTransactions(t *testing.T) {
 			name: "same transactions",
 			a: Transactions{
 				{
-					UUID:        uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
-					AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+					UUID: uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
+					//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 					Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 					Description: "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
 					Debit:       true,
@@ -1264,8 +1265,8 @@ func TestEqualTransactions(t *testing.T) {
 					},
 				},
 				{
-					UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-					AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+					UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+					//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 					Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 					Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 					Debit:       true,
@@ -1286,8 +1287,8 @@ func TestEqualTransactions(t *testing.T) {
 			},
 			b: Transactions{
 				{
-					UUID:        uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
-					AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+					UUID: uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
+					//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 					Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 					Description: "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
 					Debit:       true,
@@ -1306,8 +1307,8 @@ func TestEqualTransactions(t *testing.T) {
 					},
 				},
 				{
-					UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
-					AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+					UUID: uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+					//AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
 					Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
 					Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
 					Debit:       true,

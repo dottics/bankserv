@@ -6,8 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ## [0.11.1] - 2022-09-26
+### Updated
 - Updated the type `Account`'s `AccountNumber string `json:"account_number"` to
 `Number string `json:"number"`. Making more logical sense as `Account.Number`.
+- Removed the type `Transaction.AccountUUID` field, as this is a feature in to
+come in the future.
 
 ## [0.11.0] - 2022-09-24
 ### Added
