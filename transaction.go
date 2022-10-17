@@ -84,6 +84,44 @@ func (s *Service) GetUserTransactions(UUID uuid.UUID) (Transactions, dutil.Error
 	return res.Data.Transactions, nil
 }
 
+// GetTransaction fetches a specific transaction from the bank service based
+// on the UUID provided.
+func (s *Service) GetTransaction(UUID uuid.UUID) (Transaction, dutil.Error) {
+	// set path
+	s.serv.URL.Path = "/transaction/-"
+	// create query string parameters
+	qs := url.Values{"uuid": []string{UUID.String()}}
+	s.serv.URL.RawQuery = qs.Encode()
+	// do request
+	r, e := s.serv.NewRequest("GET", s.serv.URL.String(), nil, nil)
+	if e != nil {
+		return Transaction{}, e
+	}
+
+	type Data struct {
+		Transaction Transaction `json:"transaction"`
+	}
+	res := struct {
+		Data   Data         `json:"data"`
+		Errors dutil.Errors `json:"errors"`
+	}{}
+
+	// decode response
+	_, e = s.serv.Decode(r, &res)
+	if e != nil {
+		return Transaction{}, e
+	}
+
+	if r.StatusCode != 200 {
+		e := &dutil.Err{
+			Status: r.StatusCode,
+			Errors: res.Errors,
+		}
+		return Transaction{}, e
+	}
+	return res.Data.Transaction, nil
+}
+
 // CreateTransaction creates a new transaction for a bank account based on the
 // transaction data that is passed to the function.
 func (s *Service) CreateTransaction(t Transaction) (Transaction, dutil.Error) {

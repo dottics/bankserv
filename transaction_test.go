@@ -231,6 +231,77 @@ func TestService_GetUserTransactions(t *testing.T) {
 	}
 }
 
+func TestService_GetTransaction(t *testing.T) {
+	tt := []struct {
+		name         string
+		UUID         uuid.UUID
+		exchange     *microtest.Exchange
+		ETransaction Transaction
+		e            dutil.Error
+	}{
+		{
+			name: "permission required",
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 403,
+					Body:   `{"message":"Forbidden: Unable to process request","data":{},"errors":{"permission":["Please ensure you have permission"]}}`,
+				},
+			},
+			UUID:         uuid.New(),
+			ETransaction: Transaction{},
+			e: &dutil.Err{
+				Status: 403,
+				Errors: map[string][]string{
+					"permission": {"Please ensure you have permission"},
+				},
+			},
+		},
+		{
+			name: "get transaction",
+			UUID: uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 200,
+					Body:   `{"message":"transaction found","data":{"transaction":{"uuid":"e4bd194d-41e7-4f27-a4a8-161685a9b8b8","account_uuid":"032203af-6002-4abc-9982-73c577add8df","date":"2022-06-18T15:26:22Z","business_name":"spar","description":"SUPERSPAR JEFFREYS BAYEASTERN CAPEZA","debit":false,"credit":true,"amount":220,"items":[],"active":true,"create_date":"2022-06-18T15:49:58Z","update_date":"2022-06-18T15:50:06Z"}},"errors":{}}`,
+				},
+			},
+			ETransaction: Transaction{
+				UUID:         uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
+				AccountUUID:  uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				Date:         timeMustParse("2022-06-18T15:26:22.000Z"),
+				BusinessName: "spar",
+				Description:  "SUPERSPAR JEFFREYS BAYEASTERN CAPEZA",
+				Debit:        false,
+				Credit:       true,
+				Amount:       220,
+				Active:       true,
+				CreateDate:   timeMustParse("2022-06-18T15:49:58.000Z"),
+				UpdateDate:   timeMustParse("2022-06-18T15:50:06.000Z"),
+				Items:        Items{},
+			},
+			e: nil,
+		},
+	}
+
+	s := NewService("")
+	ms := microtest.MockServer(s.serv)
+
+	for i, tc := range tt {
+		name := fmt.Sprintf("%d %s", i, tc.name)
+		t.Run(name, func(t *testing.T) {
+			ms.Append(tc.exchange)
+
+			txn, e := s.GetTransaction(tc.UUID)
+			if !dutil.ErrorEqual(tc.e, e) {
+				t.Errorf("expected error %v got %v", tc.e, e)
+			}
+			if !EqualTransaction(tc.ETransaction, txn) {
+				t.Errorf("expected transaction %v got %v", tc.ETransaction, txn)
+			}
+		})
+	}
+}
+
 func TestService_CreateTransaction(t *testing.T) {
 	tt := []struct {
 		name         string
