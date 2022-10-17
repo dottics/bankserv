@@ -5,6 +5,11 @@ The format is based on [Keep a changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.12.0] - 2022-10-17
+### Added
+- Method `GetTransaction` that accepts a UUID parameter and returns the
+respective transaction from the bank service.
+
 ## [0.11.2] - 2022-09-26
 ### Updated
 - Added the type `Transaction.AccountUUID` field, as this is  required to be 
