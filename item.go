@@ -206,3 +206,46 @@ func (s *Service) RemoveItemTags(itemUUID uuid.UUID, tagsUUID []uuid.UUID) (Item
 	}
 	return res.Data.Item, nil
 }
+
+func (s *Service) UpdateItemTags(itemUUID uuid.UUID, tagsUUID []uuid.UUID) (Item, dutil.Error) {
+	// set path
+	s.serv.URL.Path = "/item/-/tag/-"
+	// construct the payload object
+	payload := struct {
+		UUID     uuid.UUID   `json:"uuid"`
+		TagUUIDs []uuid.UUID `json:"tag_uuids"`
+	}{
+		UUID:     itemUUID,
+		TagUUIDs: tagsUUID,
+	}
+	p, e := dutil.MarshalReader(payload)
+	if e != nil {
+		return Item{}, e
+	}
+	// do request
+	r, e := s.serv.NewRequest("PUT", s.serv.URL.String(), nil, p)
+	if e != nil {
+		return Item{}, e
+	}
+	// decode the response
+	type Data struct {
+		Item Item `json:"item"`
+	}
+	res := struct {
+		Data   Data         `json:"data"`
+		Errors dutil.Errors `json:"errors"`
+	}{}
+	_, e = s.serv.Decode(r, &res)
+	if e != nil {
+		return Item{}, e
+	}
+
+	if r.StatusCode != 200 {
+		e := &dutil.Err{
+			Status: r.StatusCode,
+			Errors: res.Errors,
+		}
+		return Item{}, e
+	}
+	return res.Data.Item, nil
+}

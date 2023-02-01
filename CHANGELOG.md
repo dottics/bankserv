@@ -5,6 +5,10 @@ The format is based on [Keep a changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.13.0] - 2023-02-1
+### Added
+- Method `UpdateItemTags` to update and set all the tags on a item.
+
 ## [0.12.0] - 2022-10-17
 ### Added
 - Method `GetTransaction` that accepts a UUID parameter and returns the
