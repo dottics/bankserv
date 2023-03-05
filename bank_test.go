@@ -62,6 +62,7 @@ func TestService_GetBanks(t *testing.T) {
 
 	s := NewService("")
 	ms := microtest.MockServer(s.serv)
+	defer ms.Server.Close()
 
 	for i, tc := range tt {
 		name := fmt.Sprintf("%d %s", i, tc.name)

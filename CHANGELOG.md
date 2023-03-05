@@ -5,6 +5,11 @@ The format is based on [Keep a changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.14.0] - 2023-03-05
+### Added
+- `Query` method to allow for rapid development of bank summary queries to find
+  effective use and views of transactional data for users.
+
 ## [0.13.0] - 2023-02-1
 ### Added
 - Method `UpdateItemTags` to update and set all the tags on a item.
