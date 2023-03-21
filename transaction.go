@@ -44,14 +44,13 @@ func (s *Service) GetAccountTransactions(UUID uuid.UUID) (Transactions, dutil.Er
 	return res.Data.Transactions, nil
 }
 
-// GetUserTransactions gets all the transactions for a user based on the user's
-// UUID. It does this by filtering by all the user's bank accounts. Then returns
-// a slice of Transaction. If an error occurs the error wil not be nil. If the
-// user's bank accounts have no transactions then an empty slice will be
-// returned.
-func (s *Service) GetUserTransactions(UUID uuid.UUID) (Transactions, dutil.Error) {
+// GetEntityTransactions gets all the transactions for an entity based on the
+// entity's UUID, an entity can be anything with an identifiable UUID. The
+// function returns Transactions if the UUID is valid, otherwise it returns
+// the dutil.Error that is encountered.
+func (s *Service) GetEntityTransactions(UUID uuid.UUID) (Transactions, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/transaction/user/-"
+	s.serv.URL.Path = "/transaction/entity/-"
 	// set query string
 	qs := url.Values{"uuid": {UUID.String()}}
 	s.serv.URL.RawQuery = qs.Encode()

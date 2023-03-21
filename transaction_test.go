@@ -122,7 +122,7 @@ func TestService_GetAccountTransactions(t *testing.T) {
 	}
 }
 
-func TestService_GetUserTransactions(t *testing.T) {
+func TestService_GetEntityTransactions(t *testing.T) {
 	tt := []struct {
 		name         string
 		exchange     *microtest.Exchange
@@ -156,7 +156,7 @@ func TestService_GetUserTransactions(t *testing.T) {
 			e:            nil,
 		},
 		{
-			name: "user has transactions",
+			name: "entity has transactions",
 			exchange: &microtest.Exchange{
 				Response: microtest.Response{
 					Status: 200,
@@ -220,7 +220,7 @@ func TestService_GetUserTransactions(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			ms.Append(tc.exchange)
 
-			xt, e := s.GetUserTransactions(UUID)
+			xt, e := s.GetEntityTransactions(UUID)
 			if !dutil.ErrorEqual(tc.e, e) {
 				t.Errorf("expected error %v got %v", tc.e, e)
 			}
