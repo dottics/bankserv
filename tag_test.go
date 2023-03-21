@@ -41,31 +41,28 @@ func TestService_GetTags(t *testing.T) {
 			},
 			tags: Tags{
 				{
-					UUID:             uuid.MustParse("0b57c1f7-1545-4270-b3b0-90c9e6a29a56"),
-					UserUUID:         uuid.UUID{},
-					OrganisationUUID: uuid.UUID{},
-					Tag:              "Food",
-					Active:           true,
-					CreateDate:       timeMustParse("2022-05-11T13:04:26Z"),
-					UpdateDate:       timeMustParse("2022-05-11T13:04:26Z"),
+					UUID:       uuid.MustParse("0b57c1f7-1545-4270-b3b0-90c9e6a29a56"),
+					EntityUUID: uuid.UUID{},
+					Tag:        "Food",
+					Active:     true,
+					CreateDate: timeMustParse("2022-05-11T13:04:26Z"),
+					UpdateDate: timeMustParse("2022-05-11T13:04:26Z"),
 				},
 				{
-					UUID:             uuid.MustParse("14376f6d-5bdf-42b8-98af-d6ee9839e5e3"),
-					UserUUID:         uuid.UUID{},
-					OrganisationUUID: uuid.UUID{},
-					Tag:              "Sport",
-					Active:           true,
-					CreateDate:       timeMustParse("2022-05-11T13:04:26Z"),
-					UpdateDate:       timeMustParse("2022-05-11T13:04:26Z"),
+					UUID:       uuid.MustParse("14376f6d-5bdf-42b8-98af-d6ee9839e5e3"),
+					EntityUUID: uuid.UUID{},
+					Tag:        "Sport",
+					Active:     true,
+					CreateDate: timeMustParse("2022-05-11T13:04:26Z"),
+					UpdateDate: timeMustParse("2022-05-11T13:04:26Z"),
 				},
 				{
-					UUID:             uuid.MustParse("14376f6d-5bdf-42b8-98af-d6ee9839e5e3"),
-					UserUUID:         uuid.UUID{},
-					OrganisationUUID: uuid.UUID{},
-					Tag:              "Equipment",
-					Active:           true,
-					CreateDate:       timeMustParse("2022-05-11T13:04:26Z"),
-					UpdateDate:       timeMustParse("2022-05-11T13:04:26Z"),
+					UUID:       uuid.MustParse("14376f6d-5bdf-42b8-98af-d6ee9839e5e3"),
+					EntityUUID: uuid.UUID{},
+					Tag:        "Equipment",
+					Active:     true,
+					CreateDate: timeMustParse("2022-05-11T13:04:26Z"),
+					UpdateDate: timeMustParse("2022-05-11T13:04:26Z"),
 				},
 			},
 			e: nil,
@@ -91,7 +88,7 @@ func TestService_GetTags(t *testing.T) {
 	}
 }
 
-func TestService_GetUserTags(t *testing.T) {
+func TestService_GetEntityTags(t *testing.T) {
 	tt := []struct {
 		name     string
 		UUID     uuid.UUID
@@ -117,41 +114,67 @@ func TestService_GetUserTags(t *testing.T) {
 			},
 		},
 		{
-			name: "get user tags",
+			name: "get entity tags",
 			UUID: uuid.MustParse("f080cf50-f537-4f17-90fa-6a2fc5a4690b"),
 			exchange: &microtest.Exchange{
 				Response: microtest.Response{
 					Status: 200,
-					Body:   `{"message":"tags found","data":{"tags":[{"uuid":"0b57c1f7-1545-4270-b3b0-90c9e6a29a56","user_uuid":"f080cf50-f537-4f17-90fa-6a2fc5a4690b","organisation_uuid":null,"tag":"Food","active":true,"create_date":"2022-05-11T13:04:26Z","update_date":"2022-05-11T13:04:26Z"},{"uuid":"14376f6d-5bdf-42b8-98af-d6ee9839e5e3","user_uuid":"f080cf50-f537-4f17-90fa-6a2fc5a4690b","organisation_uuid":null,"tag":"Sport","active":true,"create_date":"2022-05-11T13:04:26Z","update_date":"2022-05-11T13:04:26Z"},{"uuid":"14376f6d-5bdf-42b8-98af-d6ee9839e5e3","user_uuid":"f080cf50-f537-4f17-90fa-6a2fc5a4690b","organisation_uuid":null,"tag":"Equipment","active":true,"create_date":"2022-05-11T13:04:26Z","update_date":"2022-05-11T13:04:26Z"}]},"errors":{}}`,
+					Body: `{
+						"message":"tags found",
+						"data":{
+							"tags":[
+								{
+									"uuid":"0b57c1f7-1545-4270-b3b0-90c9e6a29a56",
+									"entity_uuid":"f080cf50-f537-4f17-90fa-6a2fc5a4690b",
+									"tag":"Food",
+									"active":true,
+									"create_date":"2022-05-11T13:04:26Z",
+									"update_date":"2022-05-11T13:04:26Z"
+								},{
+									"uuid":"14376f6d-5bdf-42b8-98af-d6ee9839e5e3",
+									"entity_uuid":"f080cf50-f537-4f17-90fa-6a2fc5a4690b",
+									"tag":"Sport",
+									"active":true,
+									"create_date":"2022-05-11T13:04:26Z",
+									"update_date":"2022-05-11T13:04:26Z"
+								},{
+									"uuid":"03aa1cc7-ea89-442b-bb43-c80f62bedd2f",
+									"entity_uuid":"f080cf50-f537-4f17-90fa-6a2fc5a4690b",
+									"tag":"Equipment",
+									"active":true,
+									"create_date":"2022-05-11T13:04:26Z",
+									"update_date":"2022-05-11T13:04:26Z"
+								}
+							]
+						},
+						"errors":{}
+					}`,
 				},
 			},
 			tags: Tags{
 				{
-					UUID:             uuid.MustParse("0b57c1f7-1545-4270-b3b0-90c9e6a29a56"),
-					UserUUID:         uuid.MustParse("f080cf50-f537-4f17-90fa-6a2fc5a4690b"),
-					OrganisationUUID: uuid.UUID{},
-					Tag:              "Food",
-					Active:           true,
-					CreateDate:       timeMustParse("2022-05-11T13:04:26Z"),
-					UpdateDate:       timeMustParse("2022-05-11T13:04:26Z"),
+					UUID:       uuid.MustParse("0b57c1f7-1545-4270-b3b0-90c9e6a29a56"),
+					EntityUUID: uuid.MustParse("f080cf50-f537-4f17-90fa-6a2fc5a4690b"),
+					Tag:        "Food",
+					Active:     true,
+					CreateDate: timeMustParse("2022-05-11T13:04:26Z"),
+					UpdateDate: timeMustParse("2022-05-11T13:04:26Z"),
 				},
 				{
-					UUID:             uuid.MustParse("14376f6d-5bdf-42b8-98af-d6ee9839e5e3"),
-					UserUUID:         uuid.MustParse("f080cf50-f537-4f17-90fa-6a2fc5a4690b"),
-					OrganisationUUID: uuid.UUID{},
-					Tag:              "Sport",
-					Active:           true,
-					CreateDate:       timeMustParse("2022-05-11T13:04:26Z"),
-					UpdateDate:       timeMustParse("2022-05-11T13:04:26Z"),
+					UUID:       uuid.MustParse("14376f6d-5bdf-42b8-98af-d6ee9839e5e3"),
+					EntityUUID: uuid.MustParse("f080cf50-f537-4f17-90fa-6a2fc5a4690b"),
+					Tag:        "Sport",
+					Active:     true,
+					CreateDate: timeMustParse("2022-05-11T13:04:26Z"),
+					UpdateDate: timeMustParse("2022-05-11T13:04:26Z"),
 				},
 				{
-					UUID:             uuid.MustParse("14376f6d-5bdf-42b8-98af-d6ee9839e5e3"),
-					UserUUID:         uuid.MustParse("f080cf50-f537-4f17-90fa-6a2fc5a4690b"),
-					OrganisationUUID: uuid.UUID{},
-					Tag:              "Equipment",
-					Active:           true,
-					CreateDate:       timeMustParse("2022-05-11T13:04:26Z"),
-					UpdateDate:       timeMustParse("2022-05-11T13:04:26Z"),
+					UUID:       uuid.MustParse("03aa1cc7-ea89-442b-bb43-c80f62bedd2f"),
+					EntityUUID: uuid.MustParse("f080cf50-f537-4f17-90fa-6a2fc5a4690b"),
+					Tag:        "Equipment",
+					Active:     true,
+					CreateDate: timeMustParse("2022-05-11T13:04:26Z"),
+					UpdateDate: timeMustParse("2022-05-11T13:04:26Z"),
 				},
 			},
 			e: nil,
@@ -166,98 +189,12 @@ func TestService_GetUserTags(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			ms.Append(tc.exchange)
 
-			tags, e := s.GetUserTags(tc.UUID)
+			tags, e := s.GetEntityTags(tc.UUID)
 			if !dutil.ErrorEqual(tc.e, e) {
-				t.Errorf("expected error %v got %v", tc.e, e)
+				t.Errorf("expected error\n%v\ngot\n%v\n", tc.e, e)
 			}
 			if !EqualTags(tc.tags, tags) {
-				t.Errorf("expected tags %v got %v", tc.tags, tags)
-			}
-		})
-	}
-}
-
-func TestService_GetOrganisationTags(t *testing.T) {
-	tt := []struct {
-		name     string
-		UUID     uuid.UUID
-		exchange *microtest.Exchange
-		tags     Tags
-		e        dutil.Error
-	}{
-		{
-			name: "permission required",
-			UUID: uuid.MustParse("b1039eaa-3584-4d80-bab0-0ae498d8cbae"),
-			exchange: &microtest.Exchange{
-				Response: microtest.Response{
-					Status: 403,
-					Body:   `{"message":"Forbidden: Unable to process request","data":{},"errors":{"permission":["Please ensure you have permission"]}}`,
-				},
-			},
-			tags: Tags{},
-			e: &dutil.Err{
-				Status: 403,
-				Errors: map[string][]string{
-					"permission": {"Please ensure you have permission"},
-				},
-			},
-		},
-		{
-			name: "get default tags",
-			UUID: uuid.MustParse("b1039eaa-3584-4d80-bab0-0ae498d8cbae"),
-			exchange: &microtest.Exchange{
-				Response: microtest.Response{
-					Status: 200,
-					Body:   `{"message":"tags found","data":{"tags":[{"uuid":"0b57c1f7-1545-4270-b3b0-90c9e6a29a56","user_uuid":null,"organisation_uuid":"b1039eaa-3584-4d80-bab0-0ae498d8cbae","tag":"Food","active":true,"create_date":"2022-05-11T13:04:26Z","update_date":"2022-05-11T13:04:26Z"},{"uuid":"14376f6d-5bdf-42b8-98af-d6ee9839e5e3","user_uuid":null,"organisation_uuid":"b1039eaa-3584-4d80-bab0-0ae498d8cbae","tag":"Sport","active":true,"create_date":"2022-05-11T13:04:26Z","update_date":"2022-05-11T13:04:26Z"},{"uuid":"14376f6d-5bdf-42b8-98af-d6ee9839e5e3","user_uuid":null,"organisation_uuid":"b1039eaa-3584-4d80-bab0-0ae498d8cbae","tag":"Equipment","active":true,"create_date":"2022-05-11T13:04:26Z","update_date":"2022-05-11T13:04:26Z"}]},"errors":{}}`,
-				},
-			},
-			tags: Tags{
-				{
-					UUID:             uuid.MustParse("0b57c1f7-1545-4270-b3b0-90c9e6a29a56"),
-					UserUUID:         uuid.UUID{},
-					OrganisationUUID: uuid.MustParse("b1039eaa-3584-4d80-bab0-0ae498d8cbae"),
-					Tag:              "Food",
-					Active:           true,
-					CreateDate:       timeMustParse("2022-05-11T13:04:26Z"),
-					UpdateDate:       timeMustParse("2022-05-11T13:04:26Z"),
-				},
-				{
-					UUID:             uuid.MustParse("14376f6d-5bdf-42b8-98af-d6ee9839e5e3"),
-					UserUUID:         uuid.UUID{},
-					OrganisationUUID: uuid.MustParse("b1039eaa-3584-4d80-bab0-0ae498d8cbae"),
-					Tag:              "Sport",
-					Active:           true,
-					CreateDate:       timeMustParse("2022-05-11T13:04:26Z"),
-					UpdateDate:       timeMustParse("2022-05-11T13:04:26Z"),
-				},
-				{
-					UUID:             uuid.MustParse("14376f6d-5bdf-42b8-98af-d6ee9839e5e3"),
-					UserUUID:         uuid.UUID{},
-					OrganisationUUID: uuid.MustParse("b1039eaa-3584-4d80-bab0-0ae498d8cbae"),
-					Tag:              "Equipment",
-					Active:           true,
-					CreateDate:       timeMustParse("2022-05-11T13:04:26Z"),
-					UpdateDate:       timeMustParse("2022-05-11T13:04:26Z"),
-				},
-			},
-			e: nil,
-		},
-	}
-
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
-
-	for i, tc := range tt {
-		name := fmt.Sprintf("%d %s", i, tc.name)
-		t.Run(name, func(t *testing.T) {
-			ms.Append(tc.exchange)
-
-			tags, e := s.GetOrganisationTags(tc.UUID)
-			if !dutil.ErrorEqual(tc.e, e) {
-				t.Errorf("expected error %v got %v", tc.e, e)
-			}
-			if !EqualTags(tc.tags, tags) {
-				t.Errorf("expected tags %v got %v", tc.tags, tags)
+				t.Errorf("expected tags\n%v\ngot\n%v\n", tc.tags, tags)
 			}
 		})
 	}
@@ -294,33 +231,49 @@ func TestService_CreateTag(t *testing.T) {
 			exchange: &microtest.Exchange{
 				Response: microtest.Response{
 					Status: 400,
-					Body:   `{"message":"BadRequest: Unable to process request","data":{},"errors":{"user_uuid":["required field"],"organisation_uuid":["required field"]}}`,
+					Body: `{
+						"message":"BadRequest: Unable to process request",
+						"data":{},
+						"errors":{"entity_uuid":["required field"]}
+					}`,
 				},
 			},
 			ETag: Tag{},
 			e: &dutil.Err{
 				Status: 400,
 				Errors: map[string][]string{
-					"user_uuid":         {"required field"},
-					"organisation_uuid": {"required field"},
+					"entity_uuid": {"required field"},
 				},
 			},
 		},
 		{
 			name: "create tag",
 			tag: Tag{
-				Tag:      "dottics test tag",
-				UserUUID: uuid.MustParse("8d4f6969-a54e-4c0a-9292-f87455ab0039"),
+				Tag:        "dottics test tag",
+				EntityUUID: uuid.MustParse("8d4f6969-a54e-4c0a-9292-f87455ab0039"),
 			},
 			exchange: &microtest.Exchange{
 				Response: microtest.Response{
 					Status: 201,
-					Body:   `{"message":"tag created","data":{"tag":{"uuid":"31e7685a-2800-46af-a8ed-0a300ecd45c1","user_uuid":"8d4f6969-a54e-4c0a-9292-f87455ab0039","organisation_uuid":null,"tag":"dottics test tag","active":true,"create_date":"2022-06-21T08:52:23Z","update_date":"2022-06-21T08:52:23Z"}},"errors":{}}`,
+					Body: `{
+						"message":"tag created",
+						"data":{
+							"tag":{
+								"uuid":"31e7685a-2800-46af-a8ed-0a300ecd45c1",
+								"entity_uuid":"8d4f6969-a54e-4c0a-9292-f87455ab0039",
+								"tag":"dottics test tag",
+								"active":true,
+								"create_date":"2022-06-21T08:52:23Z",
+								"update_date":"2022-06-21T08:52:23Z"
+							}
+						},
+						"errors":{}
+					}`,
 				},
 			},
 			ETag: Tag{
 				UUID:       uuid.MustParse("31e7685a-2800-46af-a8ed-0a300ecd45c1"),
-				UserUUID:   uuid.MustParse("8d4f6969-a54e-4c0a-9292-f87455ab0039"),
+				EntityUUID: uuid.MustParse("8d4f6969-a54e-4c0a-9292-f87455ab0039"),
 				Tag:        "dottics test tag",
 				Active:     true,
 				CreateDate: timeMustParse("2022-06-21T08:52:23.000Z"),
@@ -340,10 +293,10 @@ func TestService_CreateTag(t *testing.T) {
 
 			tag, e := s.CreateTag(tc.tag)
 			if tc.ETag != tag {
-				t.Errorf("expected tag %v got %v", tc.ETag, tag)
+				t.Errorf("expected tag\n%v\ngot\n%v\n", tc.ETag, tag)
 			}
 			if !dutil.ErrorEqual(tc.e, e) {
-				t.Errorf("expected error %v got %v", tc.e, e)
+				t.Errorf("expected error\n%v\ngot\n%v\n", tc.e, e)
 			}
 		})
 	}
@@ -404,13 +357,12 @@ func TestService_UpdateTag(t *testing.T) {
 				},
 			},
 			ETag: Tag{
-				UUID:             uuid.MustParse("715e1420-48b9-4fd7-9fff-140013cded72"),
-				UserUUID:         uuid.MustParse("ac640bd0-9b33-4e19-a702-abb48b4f3b18"),
-				OrganisationUUID: uuid.UUID{},
-				Tag:              "new tag name",
-				Active:           true,
-				CreateDate:       timeMustParse("2022-0624T11:11:30Z"),
-				UpdateDate:       timeMustParse("2022-0624T11:11:30Z"),
+				UUID:       uuid.MustParse("715e1420-48b9-4fd7-9fff-140013cded72"),
+				EntityUUID: uuid.MustParse("ac640bd0-9b33-4e19-a702-abb48b4f3b18"),
+				Tag:        "new tag name",
+				Active:     true,
+				CreateDate: timeMustParse("2022-0624T11:11:30Z"),
+				UpdateDate: timeMustParse("2022-0624T11:11:30Z"),
 			},
 		},
 	}
