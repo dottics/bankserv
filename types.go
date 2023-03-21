@@ -9,6 +9,7 @@ type Bank struct {
 	UUID       uuid.UUID `json:"uuid"`
 	Name       string    `json:"name"`
 	BranchCode string    `json:"branch_code"`
+	SwiftCode  string    `json:"swift_code"`
 	Active     bool      `json:"active"`
 	CreateDate time.Time `json:"create_date"`
 	UpdateDate time.Time `json:"update_date"`
@@ -16,13 +17,12 @@ type Bank struct {
 type Banks []Bank
 
 type Tag struct {
-	UUID             uuid.UUID `json:"uuid"`
-	UserUUID         uuid.UUID `json:"user_uuid"`
-	OrganisationUUID uuid.UUID `json:"organisation_uuid"`
-	Tag              string    `json:"tag"`
-	Active           bool      `json:"active"`
-	CreateDate       time.Time `json:"create_date"`
-	UpdateDate       time.Time `json:"update_date"`
+	UUID       uuid.UUID `json:"uuid"`
+	EntityUUID uuid.UUID `json:"entity_uuid"`
+	Tag        string    `json:"tag"`
+	Active     bool      `json:"active"`
+	CreateDate time.Time `json:"create_date"`
+	UpdateDate time.Time `json:"update_date"`
 }
 type Tags []Tag
 
@@ -59,13 +59,16 @@ type Transaction struct {
 type Transactions []Transaction
 
 type Account struct {
-	UUID             uuid.UUID `json:"uuid"`
-	UserUUID         uuid.UUID `json:"user_uuid"`
-	OrganisationUUID uuid.UUID `json:"organisation_uuid"`
-	Number           string    `json:"number"`
-	Active           bool      `json:"active"`
-	CreateDate       time.Time `json:"create_date"`
-	UpdateDate       time.Time `json:"update_date"`
+	UUID       uuid.UUID `json:"uuid"`
+	BankUUID   uuid.UUID `json:"bank_uuid"`
+	Bank       Bank      `json:"bank"`
+	EntityUUID uuid.UUID `json:"entity_uuid"`
+	Name       string    `json:"name"`
+	Alias      string    `json:"alias"`
+	Number     string    `json:"number"`
+	Active     bool      `json:"active"`
+	CreateDate time.Time `json:"create_date"`
+	UpdateDate time.Time `json:"update_date"`
 }
 type Accounts []Account
 
