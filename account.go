@@ -6,13 +6,13 @@ import (
 	"net/url"
 )
 
-// GetUserAccounts gets all the bank accounts for a specific user based on
-// the user's UUID passed to the function and returns a slice of Account.
-// If an error occurs such as the user not found then an empty slice is returned
-// and an error.
-func (s *Service) GetUserAccounts(UUID uuid.UUID) (Accounts, dutil.Error) {
+// GetEntityAccounts gets all the accounts for a specific entity. An entity
+// represents any user, organisation or group. Based on the UUID passed the
+// function returns the Accounts. If an error occurs such as the UUID is invalid
+// then the error is returned.
+func (s *Service) GetEntityAccounts(UUID uuid.UUID) (Accounts, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/account/user/-"
+	s.serv.URL.Path = "/account/entity/-"
 	// add query string
 	qs := url.Values{"uuid": {UUID.String()}}
 	s.serv.URL.RawQuery = qs.Encode()
@@ -45,46 +45,6 @@ func (s *Service) GetUserAccounts(UUID uuid.UUID) (Accounts, dutil.Error) {
 		return Accounts{}, e
 	}
 	// return bank accounts on successful
-	return res.Data.Accounts, nil
-}
-
-// GetOrganisationAccounts gets all the bank accounts for a specific
-// organisation based on the organisation's UUID and returns a slice of
-// Account. If error occurs an error is returned.
-func (s *Service) GetOrganisationAccounts(UUID uuid.UUID) (Accounts, dutil.Error) {
-	// set path
-	s.serv.URL.Path = "/account/organisation/-"
-	// set query string
-	qs := url.Values{"uuid": {UUID.String()}}
-	s.serv.URL.RawQuery = qs.Encode()
-	// do request
-	r, e := s.serv.NewRequest("GET", s.serv.URL.String(), nil, nil)
-	if e != nil {
-		return Accounts{}, e
-	}
-
-	type Data struct {
-		Accounts `json:"accounts"`
-	}
-	res := struct {
-		Data   `json:"data"`
-		Errors map[string][]string
-	}{}
-
-	// decode the response
-	_, e = s.serv.Decode(r, &res)
-	if e != nil {
-		return Accounts{}, e
-	}
-
-	if r.StatusCode != 200 {
-		e := &dutil.Err{
-			Status: r.StatusCode,
-			Errors: res.Errors,
-		}
-		return Accounts{}, e
-	}
-	// return the bank accounts on successful
 	return res.Data.Accounts, nil
 }
 
