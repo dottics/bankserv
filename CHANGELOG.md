@@ -5,6 +5,17 @@ The format is based on [Keep a changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.0.0] - 2023-03-21
+### Updated
+**Breaking Change**
+- Fetching of accounts and transactions are done with an entity UUID instead.
+  User, Organisations and more is rather modelled as a generic entity
+  irrespective of what the entity really is. As this does not influence the
+  bank-service.
+- New methods `GetEntityTransactions` and `GetEntityAccounts`.
+- Removed methods `GetUserAccounts`, `GetUserTransactions` and
+  `GetOrganisationTransactions`.
+
 ## [0.14.0] - 2023-03-05
 ### Added
 - `Query` method to allow for rapid development of bank summary queries to find
