@@ -8,6 +8,24 @@ import (
 	"testing"
 )
 
+var entityAccount = Account{
+	UUID:       uuid.MustParse("e6b7f986-307c-4147-a34e-f924790799bb"),
+	BankUUID:   uuid.MustParse("344a4aa5-1935-4c28-973e-d74247d8db91"),
+	EntityUUID: uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
+	Number:     "098765432109",
+	Name:       "private bank account",
+	Alias:      "personal account",
+}
+var bank = Bank{
+	UUID:       uuid.MustParse("344a4aa5-1935-4c28-973e-d74247d8db91"),
+	Name:       "investec",
+	BranchCode: "580001",
+	SwiftCode:  "INVXXJJ",
+	Active:     true,
+	CreateDate: timeMustParse("2022-06-17T21:57:12.000Z"),
+	UpdateDate: timeMustParse("2022-06-17T21:57:12.000Z"),
+}
+
 func TestService_GetEntityAccounts(t *testing.T) {
 	tt := []struct {
 		name     string
@@ -71,6 +89,15 @@ func TestService_GetEntityAccounts(t *testing.T) {
 							"accounts":[
 								{
 									"uuid":"318b052a-7911-4e09-a76d-f6e6a18c6fcd",
+									"bank": {
+										"uuid":"344a4aa5-1935-4c28-973e-d74247d8db91",
+										"name":"investec",
+										"branch_code":"580001",
+										"swift_code":"INVXXJJ",
+										"active":true,
+										"create_date":"2022-06-17T21:57:12.000Z",
+										"update_date":"2022-06-17T21:57:12.000Z"
+									},
 									"entity_uuid":"ef50ad5f-539a-454d-bb49-c2e3123eaba8",
 									"number":"012345678911",
 									"name":"private bank account",
@@ -81,6 +108,15 @@ func TestService_GetEntityAccounts(t *testing.T) {
 								},
 								{
 									"uuid":"d25ac3b1-0a8f-43a3-8da1-d2f22a814a82",
+									"bank": {
+										"uuid":"344a4aa5-1935-4c28-973e-d74247d8db91",
+										"name":"investec",
+										"branch_code":"580001",
+										"swift_code":"INVXXJJ",
+										"active":true,
+										"create_date":"2022-06-17T21:57:12.000Z",
+										"update_date":"2022-06-17T21:57:12.000Z"
+									},
 									"entity_uuid":"ef50ad5f-539a-454d-bb49-c2e3123eaba8",
 									"number":"012345678912",
 									"name":"savings account",
@@ -98,6 +134,7 @@ func TestService_GetEntityAccounts(t *testing.T) {
 			accounts: Accounts{
 				Account{
 					UUID:       uuid.MustParse("318b052a-7911-4e09-a76d-f6e6a18c6fcd"),
+					Bank:       bank,
 					EntityUUID: uuid.MustParse("ef50ad5f-539a-454d-bb49-c2e3123eaba8"),
 					Number:     "012345678911",
 					Name:       "private bank account",
@@ -108,6 +145,7 @@ func TestService_GetEntityAccounts(t *testing.T) {
 				},
 				Account{
 					UUID:       uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+					Bank:       bank,
 					EntityUUID: uuid.MustParse("ef50ad5f-539a-454d-bb49-c2e3123eaba8"),
 					Number:     "012345678912",
 					Name:       "savings account",
@@ -137,7 +175,7 @@ func TestService_GetEntityAccounts(t *testing.T) {
 			// test the bank accounts
 			if len(xba) != len(tc.accounts) {
 				t.Errorf(
-					"expected bank accounts to have length %d got %d",
+					"expected accounts to have length %d got %d",
 					len(tc.accounts),
 					len(xba),
 				)
@@ -145,31 +183,13 @@ func TestService_GetEntityAccounts(t *testing.T) {
 			// to check that bank account are equal
 			if len(xba) > 0 && tc.accounts[0] != xba[0] {
 				t.Errorf(
-					"expected bank account %v got %v",
+					"expected account\n%v\ngot\n%v",
 					tc.accounts[0],
 					xba[0],
 				)
 			}
 		})
 	}
-}
-
-var entityAccount = Account{
-	UUID:       uuid.MustParse("e6b7f986-307c-4147-a34e-f924790799bb"),
-	BankUUID:   uuid.MustParse("344a4aa5-1935-4c28-973e-d74247d8db91"),
-	EntityUUID: uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
-	Number:     "098765432109",
-	Name:       "private bank account",
-	Alias:      "personal account",
-}
-var bank = Bank{
-	UUID:       uuid.MustParse("344a4aa5-1935-4c28-973e-d74247d8db91"),
-	Name:       "investec",
-	BranchCode: "580001",
-	SwiftCode:  "INVXXJJ",
-	Active:     true,
-	CreateDate: timeMustParse("2022-06-17T21:57:12.000Z"),
-	UpdateDate: timeMustParse("2022-06-17T21:57:12.000Z"),
 }
 
 func TestService_CreateAccount(t *testing.T) {
