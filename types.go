@@ -44,6 +44,7 @@ type Items []Item
 
 type Transaction struct {
 	UUID         uuid.UUID `json:"uuid"`
+	ExternalID   string    `json:"external_id"`
 	AccountUUID  uuid.UUID `json:"account_uuid"`
 	Date         time.Time `json:"date"`
 	BusinessName string    `json:"business_name"`
