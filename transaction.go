@@ -3,6 +3,7 @@ package bankserv
 import (
 	"github.com/dottics/dutil"
 	"github.com/google/uuid"
+	"net/http"
 	"net/url"
 )
 
@@ -232,4 +233,48 @@ func (s *Service) DeleteTransaction(UUID uuid.UUID) dutil.Error {
 	}
 	// return on successful response
 	return nil
+}
+
+// CreateTransactionBatch handles the exchange with the bank service to allow
+// the creation of a batch of transactions. The expected behaviour is that
+// the transaction must have an ExternalID, which restricts this method to
+// only processing of data from entity/service sources (such as Open Banking).
+// Also, if the AccountUUID does not exist, the transaction will simply be
+// skipped.
+func (s *Service) CreateTransactionBatch(xt *Transactions, headers *http.Header) (*Transactions, dutil.Error) {
+	s.serv.URL.Path = "/transaction/batch"
+	payload := struct {
+		Transactions Transactions `json:"transactions"`
+	}{Transactions: *xt}
+
+	p, e := dutil.MarshalReader(payload)
+	if e != nil {
+		return nil, e
+	}
+
+	r, e := s.serv.NewRequest(http.MethodPost, s.serv.URL.String(), *headers, p)
+	if e != nil {
+		return nil, e
+	}
+
+	type Data struct {
+		Transactions Transactions `json:"transactions"`
+	}
+	res := struct {
+		Data   Data         `json:"data"`
+		Errors dutil.Errors `json:"errors"`
+	}{}
+	_, e = s.serv.Decode(r, &res)
+	if e != nil {
+		return nil, e
+	}
+
+	if r.StatusCode != 201 {
+		e := &dutil.Err{
+			Status: r.StatusCode,
+			Errors: res.Errors,
+		}
+		return nil, e
+	}
+	return &res.Data.Transactions, nil
 }
