@@ -11,7 +11,7 @@ import (
 // on the bank account's UUID passed to the function and returns a pointer to
 // the AccountBalance value. The balance returned is the first balance before
 // the date passed to the function.
-func (s *Service) GetAccountBalance(UUID uuid.UUID, date time.Time, headers *http.Header) (*AccountBalance, dutil.Error) {
+func (s *Service) GetAccountBalance(UUID uuid.UUID, date time.Time, headers *http.Header) (AccountBalance, dutil.Error) {
 	// set path
 	s.serv.URL.Path = "/account/-/balance"
 
@@ -24,7 +24,7 @@ func (s *Service) GetAccountBalance(UUID uuid.UUID, date time.Time, headers *htt
 	// do request
 	r, e := s.serv.NewRequest(http.MethodGet, s.serv.URL.String(), *headers, nil)
 	if e != nil {
-		return nil, e
+		return AccountBalance{}, e
 	}
 
 	// create response structure
@@ -39,7 +39,7 @@ func (s *Service) GetAccountBalance(UUID uuid.UUID, date time.Time, headers *htt
 	// decode response
 	_, e = s.serv.Decode(r, &res)
 	if e != nil {
-		return nil, e
+		return AccountBalance{}, e
 	}
 
 	// check the response status
@@ -48,29 +48,29 @@ func (s *Service) GetAccountBalance(UUID uuid.UUID, date time.Time, headers *htt
 			Status: r.StatusCode,
 			Errors: res.Errors,
 		}
-		return nil, e
+		return AccountBalance{}, e
 	}
 
-	return &res.Data.AccountBalance, nil
+	return res.Data.AccountBalance, nil
 }
 
 // CreateAccountBalance creates a new account balance for a specific bank
 // account based on the bank account's UUID passed to the function and returns
 // a pointer to the AccountBalance value.
-func (s *Service) CreateAccountBalance(ab *AccountBalance, headers *http.Header) (*AccountBalance, dutil.Error) {
+func (s *Service) CreateAccountBalance(ab *AccountBalance, headers *http.Header) (AccountBalance, dutil.Error) {
 	// set path
 	s.serv.URL.Path = "/account/-/balance"
 
 	// marshal the account balance
 	p, e := dutil.MarshalReader(ab)
 	if e != nil {
-		return nil, e
+		return AccountBalance{}, e
 	}
 
 	// do request
 	r, e := s.serv.NewRequest(http.MethodPost, s.serv.URL.String(), *headers, p)
 	if e != nil {
-		return nil, e
+		return AccountBalance{}, e
 	}
 
 	// create response structure
@@ -85,7 +85,7 @@ func (s *Service) CreateAccountBalance(ab *AccountBalance, headers *http.Header)
 	// decode response
 	_, e = s.serv.Decode(r, &res)
 	if e != nil {
-		return nil, e
+		return AccountBalance{}, e
 	}
 
 	// check the response status
@@ -94,7 +94,7 @@ func (s *Service) CreateAccountBalance(ab *AccountBalance, headers *http.Header)
 			Status: r.StatusCode,
 			Errors: res.Errors,
 		}
-		return nil, e
+		return AccountBalance{}, e
 	}
-	return &res.Data.AccountBalance, nil
+	return res.Data.AccountBalance, nil
 }

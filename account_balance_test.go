@@ -16,7 +16,7 @@ func TestService_GetAccountBalance(t *testing.T) {
 		UUID     uuid.UUID
 		date     time.Time
 		exchange *microtest.Exchange
-		ab       *AccountBalance
+		ab       AccountBalance
 		e        dutil.Error
 	}{
 		{
@@ -34,7 +34,7 @@ func TestService_GetAccountBalance(t *testing.T) {
 					}`,
 				},
 			},
-			ab: nil,
+			ab: AccountBalance{},
 			e: &dutil.Err{
 				Status: http.StatusUnauthorized,
 				Errors: dutil.Errors{
@@ -50,19 +50,24 @@ func TestService_GetAccountBalance(t *testing.T) {
 				Response: microtest.Response{
 					Status: http.StatusOK,
 					Body: `{
-						"message": "account balance retrieved"
+						"message": "account balance retrieved",
 						"data": {
 							"account_balance": {
-								"uuid": "00000000-0000-0000-0000-000000000000",
-								"date": "2020-01-01",
+								"date": "2020-01-01T00:00:00Z",
 								"balance": 0,
 								"currency": "GBP"
 							}
 						},
-						"errors": {},
+						"errors": {}
 					}`,
 				},
 			},
+			ab: AccountBalance{
+				Date:    time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC),
+				Balance: 0,
+				//Currency: "GBP",
+			},
+			e: nil,
 		},
 	}
 
@@ -75,13 +80,13 @@ func TestService_GetAccountBalance(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			ms.Append(tc.exchange)
 
-			ab, e := s.GetAccountBalance(tc.UUID, tc.date, nil)
+			ab, e := s.GetAccountBalance(tc.UUID, tc.date, &http.Header{"x-dot-api-key": {"test"}})
 
 			if !dutil.ErrorEqual(e, tc.e) {
 				t.Errorf("got %v, want %v", e, tc.e)
 			}
 			if ab != tc.ab {
-				t.Errorf("expected %v got %v", tc.ab, ab)
+				t.Errorf("expected\n%v\n got\n%v", tc.ab, ab)
 			}
 		})
 	}
