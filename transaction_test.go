@@ -695,6 +695,7 @@ func TestService_CreateTransactionBatch(t *testing.T) {
 
 	s := NewService("")
 	ms := microtest.MockServer(s.serv)
+	defer ms.Server.Close()
 
 	for i, tc := range tests {
 		name := fmt.Sprintf("%d %s", i, tc.name)
