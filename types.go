@@ -42,8 +42,12 @@ type Item struct {
 }
 type Items []Item
 
+// Transaction describes a transaction, what is most important that the
+// ExternalID represents an ID from an external source, if it is the zero string
+// it means that the transaction was a manual entry by the user.
 type Transaction struct {
 	UUID         uuid.UUID `json:"uuid"`
+	ExternalID   string    `json:"external_id"`
 	AccountUUID  uuid.UUID `json:"account_uuid"`
 	Date         time.Time `json:"date"`
 	BusinessName string    `json:"business_name"`
@@ -58,6 +62,8 @@ type Transaction struct {
 }
 type Transactions []Transaction
 
+// Account is a description of an account, this should represent any account
+// be it a bank account, crypto wallet or anything similar.
 type Account struct {
 	UUID       uuid.UUID `json:"uuid"`
 	BankUUID   uuid.UUID `json:"bank_uuid"`
@@ -71,6 +77,15 @@ type Account struct {
 	UpdateDate time.Time `json:"update_date"`
 }
 type Accounts []Account
+
+// AccountBalance describes the account's balance at a reference point or date
+// in time.
+type AccountBalance struct {
+	AccountUUID uuid.UUID `json:"account_uuid"`
+	Date        time.Time `json:"date"`
+	Balance     float32   `json:"balance"`
+	Active      bool      `json:"active"`
+}
 
 // timeMustParse is a function the parses a time string formatted based on the
 // RFC3339 standard as 2006-01-02T15:04:05Z07:00 to a time.Time and returns

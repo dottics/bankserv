@@ -5,7 +5,9 @@ import (
 	"github.com/dottics/dutil"
 	"github.com/google/uuid"
 	"github.com/johannesscr/micro/microtest"
+	"net/http"
 	"testing"
+	"time"
 )
 
 func TestService_GetAccountTransactions(t *testing.T) {
@@ -115,7 +117,7 @@ func TestService_GetAccountTransactions(t *testing.T) {
 			if !dutil.ErrorEqual(tc.e, e) {
 				t.Errorf("expected error %v got %v", tc.e, e)
 			}
-			if !EqualTransactions(tc.transactions, xt) {
+			if !EqualTransactions(&tc.transactions, &xt) {
 				t.Errorf("expected transactions %v got %v", tc.transactions, xt)
 			}
 		})
@@ -224,7 +226,7 @@ func TestService_GetEntityTransactions(t *testing.T) {
 			if !dutil.ErrorEqual(tc.e, e) {
 				t.Errorf("expected error %v got %v", tc.e, e)
 			}
-			if !EqualTransactions(tc.transactions, xt) {
+			if !EqualTransactions(&tc.transactions, &xt) {
 				t.Errorf("expected transactions %v got %v", tc.transactions, xt)
 			}
 		})
@@ -576,6 +578,139 @@ func TestService_DeleteTransaction(t *testing.T) {
 			e := s.DeleteTransaction(tc.UUID)
 			if !dutil.ErrorEqual(tc.e, e) {
 				t.Errorf("expected error %v got %v", tc.e, e)
+			}
+		})
+	}
+}
+
+func TestService_CreateTransactionBatch(t *testing.T) {
+	tests := []struct {
+		name     string
+		txnIn    *Transactions
+		exchange *microtest.Exchange
+		txnOut   *Transactions
+		e        dutil.Error
+	}{
+		{
+			name: "permission required",
+			txnIn: &Transactions{
+				{}, // technically this is invalid, but we don't care
+				{},
+			},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 403,
+					Body:   `{"message":"Forbidden: Unable to process request","data":{},"errors":{"permission":["Please ensure you have permission"]}}`,
+				},
+			},
+			txnOut: nil,
+			e: &dutil.Err{
+				Status: 403,
+				Errors: map[string][]string{
+					"permission": {"Please ensure you have permission"},
+				},
+			},
+		},
+		{
+			name: "successful",
+			txnIn: &Transactions{
+				{}, // technically this is invalid, but we don't care
+				{},
+			},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 201,
+					Body: `{
+						"message":"2 transactions created",
+						"data":{
+							"transactions":[
+								{
+									"uuid":"d6b14d91-c5a4-4a02-a6e3-b4dd27cb663c",
+									"external_id":"unique-transaction-hash-1",
+									"account_uuid":"b8bf892c-fb61-4bcc-815f-b995df429566",
+									"business_name":"my business",
+									"description":"my description",
+									"debit":true,
+									"credit":false,
+									"amount":100,
+									"date":"2022-06-19T13:27:19.000Z",
+									"active":true,
+									"create_date":"2022-06-18T15:49:58.000Z",
+									"update_date":"2022-06-18T15:50:06.000Z",
+									"items":[]
+								},
+								{
+									"uuid":"214a1aca-9159-4046-a28e-b25706c55de6",
+									"external_id":"unique-transaction-hash-2",
+									"account_uuid":"3149f67a-4aa4-4fda-afc0-7ce1654a9977",
+									"business_name":"my business",
+									"description":"my description",
+									"debit":true,
+									"credit":false,
+									"amount":100,
+									"date":"2022-06-19T13:27:19.000Z",
+									"active":true,
+									"create_date":"2022-06-18T15:49:58.000Z",
+									"update_date":"2022-06-18T15:50:06.000Z",
+									"items":[]
+								}
+							]
+						},
+						"errors":{}
+					}`,
+				},
+			},
+			txnOut: &Transactions{
+				{
+					UUID:         uuid.MustParse("d6b14d91-c5a4-4a02-a6e3-b4dd27cb663c"),
+					AccountUUID:  uuid.MustParse("b8bf892c-fb61-4bcc-815f-b995df429566"),
+					ExternalID:   "unique-transaction-hash-1",
+					BusinessName: "my business",
+					Description:  "my description",
+					Debit:        true,
+					Credit:       false,
+					Amount:       100,
+					Date:         time.Date(2022, 6, 19, 13, 27, 19, 0, time.UTC),
+					Active:       true,
+					CreateDate:   time.Date(2022, 6, 18, 15, 49, 58, 0, time.UTC),
+					UpdateDate:   time.Date(2022, 6, 18, 15, 50, 6, 0, time.UTC),
+				},
+				{
+					UUID:         uuid.MustParse("214a1aca-9159-4046-a28e-b25706c55de6"),
+					AccountUUID:  uuid.MustParse("3149f67a-4aa4-4fda-afc0-7ce1654a9977"),
+					ExternalID:   "unique-transaction-hash-2",
+					BusinessName: "my business",
+					Description:  "my description",
+					Debit:        true,
+					Credit:       false,
+					Amount:       100,
+					Date:         time.Date(2022, 6, 19, 13, 27, 19, 0, time.UTC),
+					Active:       true,
+					CreateDate:   time.Date(2022, 6, 18, 15, 49, 58, 0, time.UTC),
+					UpdateDate:   time.Date(2022, 6, 18, 15, 50, 6, 0, time.UTC),
+				},
+			},
+		},
+	}
+
+	s := NewService("")
+	ms := microtest.MockServer(s.serv)
+
+	for i, tc := range tests {
+		name := fmt.Sprintf("%d %s", i, tc.name)
+		t.Run(name, func(t *testing.T) {
+			ms.Append(tc.exchange)
+
+			xt, e := s.CreateTransactionBatch(
+				tc.txnIn,
+				&http.Header{"x-dot-api-key": []string{"my-token"}},
+			)
+
+			if !dutil.ErrorEqual(tc.e, e) {
+				t.Errorf("expected error %v got %v", tc.e, e)
+			}
+			if !EqualTransactions(xt, tc.txnOut) {
+				t.Errorf("expected transactions\n%v\n got\n%v", tc.txnOut, xt)
 			}
 		})
 	}
