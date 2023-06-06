@@ -5,6 +5,12 @@ The format is based on [Keep a changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.1.0] - 2023-06-06
+### Added
+- The `CreateTransactionBatch` method to create a batch of transactions.
+- This method also bring in the initial support for inter-service communication
+  using a http header to pass an authentication token, as an API key.
+
 ## [1.0.0] - 2023-03-21
 ### Updated
 **Breaking Change**
