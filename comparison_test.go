@@ -1333,7 +1333,7 @@ func TestEqualTransactions(t *testing.T) {
 	for i, tc := range tt {
 		name := fmt.Sprintf("%d %s", i, tc.name)
 		t.Run(name, func(t *testing.T) {
-			o := EqualTransactions(tc.a, tc.b)
+			o := EqualTransactions(&tc.a, &tc.b)
 			if tc.o != o {
 				t.Errorf("expected output %t got %t", tc.o, o)
 			}

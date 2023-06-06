@@ -83,6 +83,9 @@ func EqualTransaction(a, b Transaction) bool {
 	if a.UUID != b.UUID {
 		return false
 	}
+	if a.ExternalID != b.ExternalID {
+		return false
+	}
 	if a.AccountUUID != b.AccountUUID {
 		return false
 	}
@@ -121,12 +124,18 @@ func EqualTransaction(a, b Transaction) bool {
 
 // EqualTransactions reports whether a and b are the same Transactions in the
 // same order within the slice.
-func EqualTransactions(a, b Transactions) bool {
-	if len(a) != len(b) {
+func EqualTransactions(a, b *Transactions) bool {
+	if a == nil && b == nil {
+		return true
+	}
+	if a == nil || b == nil {
 		return false
 	}
-	for i, ai := range a {
-		if !EqualTransaction(ai, b[i]) {
+	if len(*a) != len(*b) {
+		return false
+	}
+	for i, ai := range *a {
+		if !EqualTransaction(ai, (*b)[i]) {
 			return false
 		}
 	}
