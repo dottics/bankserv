@@ -5,6 +5,10 @@ The format is based on [Keep a changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.3.0] - 2023-06-06
+### Added
+- The `CreateAccountBalance` method to create a new account balance.
+
 ## [1.2.0] - 2023-06-06
 ### Added
 - The `GetAccountBalance` method to get the balance of a bank account.
