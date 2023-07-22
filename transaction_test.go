@@ -222,7 +222,7 @@ func TestService_GetEntityTransactions(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			ms.Append(tc.exchange)
 
-			xt, e := s.GetEntityTransactions(UUID)
+			xt, e := s.GetEntityTransactions(UUID, nil)
 			if !dutil.ErrorEqual(tc.e, e) {
 				t.Errorf("expected error %v got %v", tc.e, e)
 			}

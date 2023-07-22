@@ -5,6 +5,13 @@ The format is based on [Keep a changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.3.1] - 2023-07-22
+### Updated
+- The `GetEntityTransactions` and added `query url.Values` parameter to allow
+  for filtering of transactions.
+  - `start_date` to filter transactions from a start date.
+  - `end_date` to filter transactions to an end date.
+
 ## [1.3.0] - 2023-06-06
 ### Added
 - The `CreateAccountBalance` method to create a new account balance.

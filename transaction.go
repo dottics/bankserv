@@ -49,11 +49,20 @@ func (s *Service) GetAccountTransactions(UUID uuid.UUID) (Transactions, dutil.Er
 // entity's UUID, an entity can be anything with an identifiable UUID. The
 // function returns Transactions if the UUID is valid, otherwise it returns
 // the dutil.Error that is encountered.
-func (s *Service) GetEntityTransactions(UUID uuid.UUID) (Transactions, dutil.Error) {
+//
+// query - is additional query string parameters that can be passed to the
+// function. The query string parameters that are accepted are:
+//   - start_date: string (date)
+//   - end_date: string (date)
+func (s *Service) GetEntityTransactions(UUID uuid.UUID, query url.Values) (Transactions, dutil.Error) {
 	// set path
 	s.serv.URL.Path = "/transaction/entity/-"
 	// set query string
 	qs := url.Values{"uuid": {UUID.String()}}
+	if query != nil {
+		qs = query
+		qs.Set("uuid", UUID.String())
+	}
 	s.serv.URL.RawQuery = qs.Encode()
 
 	r, e := s.serv.NewRequest("GET", s.serv.URL.String(), nil, nil)
