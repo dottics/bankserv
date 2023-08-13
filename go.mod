@@ -1,4 +1,4 @@
-module github.com/dottics/bankserv
+module github.com/dottics/bankserv/v2
 
 go 1.20
 
