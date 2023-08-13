@@ -1,6 +1,6 @@
 module github.com/dottics/bankserv
 
-go 1.17
+go 1.20
 
 require (
 	github.com/dottics/dutil v0.1.0
