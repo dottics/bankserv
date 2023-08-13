@@ -1,4 +1,4 @@
-package bankserv
+package v2
 
 // EqualTags is a comparison function for Tags or two slices of Tag. Slices
 // are not directly comparable, therefore a comparison function is needed.

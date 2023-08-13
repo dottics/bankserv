@@ -1,4 +1,4 @@
-package bankserv
+package v2
 
 import (
 	"github.com/johannesscr/micro/msp"
