@@ -20,15 +20,17 @@ func TestNewService(t *testing.T) {
 		t.Errorf("unexpected error setting %s: %v", hostEnv, err)
 	}
 	token := "my-test-token"
-	ms := NewService(token)
-	if ms.serv.URL.Scheme != scheme {
+	ms := NewService(Config{
+		UserToken: token,
+	})
+	if ms.URL.Scheme != scheme {
 		t.Errorf("expected Bank Service to have Scheme %s got %s",
-			scheme, ms.serv.URL.Scheme,
+			scheme, ms.URL.Scheme,
 		)
 	}
-	if ms.serv.URL.Host != host {
+	if ms.URL.Host != host {
 		t.Errorf("expected Bank Service to have Host %s got %s",
-			host, ms.serv.URL.Host,
+			host, ms.URL.Host,
 		)
 	}
 }

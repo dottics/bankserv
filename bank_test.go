@@ -60,8 +60,8 @@ func TestService_GetBanks(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 	defer ms.Server.Close()
 
 	for i, tc := range tt {

@@ -69,8 +69,8 @@ func TestService_GetTags(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 
 	for i, tc := range tt {
 		name := fmt.Sprintf("%d %s", i, tc.name)
@@ -181,8 +181,8 @@ func TestService_GetEntityTags(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 
 	for i, tc := range tt {
 		name := fmt.Sprintf("%d %s", i, tc.name)
@@ -283,8 +283,8 @@ func TestService_CreateTag(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 
 	for i, tc := range tt {
 		name := fmt.Sprintf("%d %s", i, tc.name)
@@ -367,8 +367,8 @@ func TestService_UpdateTag(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 
 	for i, tc := range tt {
 		name := fmt.Sprintf("%d %s", i, tc.name)
@@ -433,8 +433,8 @@ func TestService_DeleteTag(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 
 	for i, tc := range tt {
 		name := fmt.Sprintf("%d %s", i, tc.name)

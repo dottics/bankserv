@@ -159,8 +159,8 @@ func TestService_GetEntityAccounts(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 
 	for i, tc := range tt {
 		name := fmt.Sprintf("%d %s", i, tc.name)
@@ -281,8 +281,8 @@ func TestService_CreateAccount(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 
 	for i, tc := range tt {
 		name := fmt.Sprintf("%d %s", i, tc.name)
@@ -326,8 +326,8 @@ func TestService_UpdateAccount(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 
 	for i, tc := range tt {
 		name := fmt.Sprintf("%d %s", i, tc.name)
@@ -378,8 +378,8 @@ func TestService_DeleteAccount(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 
 	for i, tc := range tt {
 		name := fmt.Sprintf("%d %s", i, tc.name)

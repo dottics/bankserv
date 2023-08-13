@@ -71,8 +71,13 @@ func TestService_GetAccountBalance(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{
+		APIKey: "test",
+		Header: http.Header{
+			"x-dot-api-key": {"test"},
+		},
+	})
+	ms := microtest.MockServer(s)
 	defer ms.Server.Close()
 
 	for i, tc := range tests {
@@ -80,7 +85,7 @@ func TestService_GetAccountBalance(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			ms.Append(tc.exchange)
 
-			ab, e := s.GetAccountBalance(tc.UUID, tc.date, &http.Header{"x-dot-api-key": {"test"}})
+			ab, e := s.GetAccountBalance(tc.UUID, tc.date)
 
 			if !dutil.ErrorEqual(e, tc.e) {
 				t.Errorf("got %v, want %v", e, tc.e)
@@ -159,8 +164,13 @@ func TestService_CreateAccountBalance(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{
+		APIKey: "test",
+		Header: http.Header{
+			"x-dot-api-key": {"test"},
+		},
+	})
+	ms := microtest.MockServer(s)
 	defer ms.Server.Close()
 
 	for i, tc := range tests {
@@ -168,7 +178,7 @@ func TestService_CreateAccountBalance(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			ms.Append(tc.exchange)
 
-			ab, e := s.CreateAccountBalance(&tc.abIn, &http.Header{"x-dot-api-key": {"test"}})
+			ab, e := s.CreateAccountBalance(&tc.abIn)
 
 			if !dutil.ErrorEqual(e, tc.e) {
 				t.Errorf("got %v, want %v", e, tc.e)

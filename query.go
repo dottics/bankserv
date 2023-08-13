@@ -17,12 +17,11 @@ func (s *Service) Query(values url.Values) ([]byte, dutil.Error) {
 		e := dutil.NewErr(400, "q", []string{"q is required"})
 		return []byte{}, e
 	}
-	ms := s.serv
 	// set the path
-	ms.URL.Path = "/query"
+	s.URL.Path = "/query"
 	// set the query parameters/values
-	ms.URL.RawQuery = values.Encode()
-	res, e := ms.NewRequest("GET", ms.URL.String(), nil, nil)
+	s.URL.RawQuery = values.Encode()
+	res, e := s.DoRequest("GET", s.URL, values, nil, nil)
 	if e != nil {
 		return []byte{}, e
 	}
