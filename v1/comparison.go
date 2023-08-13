@@ -1,4 +1,4 @@
-package v2
+package v1
 
 // EqualTags is a comparison function for Tags or two slices of Tag. Slices
 // are not directly comparable, therefore a comparison function is needed.
