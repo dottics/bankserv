@@ -101,8 +101,8 @@ func TestService_CreateItem(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 	defer ms.Server.Close()
 
 	for i, tc := range tt {
@@ -214,8 +214,8 @@ func TestService_UpdateItem(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 	defer ms.Server.Close()
 
 	for i, tc := range tt {
@@ -287,8 +287,8 @@ func TestService_DeleteItem(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 	defer ms.Server.Close()
 
 	for i, tc := range tt {
@@ -395,8 +395,8 @@ func TestService_AddItemTags(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 	defer ms.Server.Close()
 
 	for i, tc := range tests {
@@ -498,8 +498,8 @@ func TestService_RemoveItemTags(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 	defer ms.Server.Close()
 
 	for i, tc := range tests {
@@ -612,8 +612,8 @@ func TestService_UpdateItemTags(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 	defer ms.Server.Close()
 
 	for i, tc := range tests {

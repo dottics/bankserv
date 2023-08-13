@@ -3,6 +3,7 @@ package bankserv
 import (
 	"github.com/dottics/dutil"
 	"github.com/google/uuid"
+	"github.com/johannesscr/micro/msp"
 	"net/url"
 )
 
@@ -12,12 +13,11 @@ import (
 // then the error is returned.
 func (s *Service) GetEntityAccounts(UUID uuid.UUID) (Accounts, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/account/entity/-"
+	s.URL.Path = "/account/entity/-"
 	// add query string
 	qs := url.Values{"uuid": {UUID.String()}}
-	s.serv.URL.RawQuery = qs.Encode()
 	// do request
-	r, e := s.serv.NewRequest("GET", s.serv.URL.String(), nil, nil)
+	r, e := s.DoRequest("GET", s.URL, qs, nil, nil)
 	if e != nil {
 		return Accounts{}, e
 	}
@@ -32,7 +32,7 @@ func (s *Service) GetEntityAccounts(UUID uuid.UUID) (Accounts, dutil.Error) {
 	}{}
 
 	// decode the response
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return Accounts{}, e
 	}
@@ -53,7 +53,7 @@ func (s *Service) GetEntityAccounts(UUID uuid.UUID) (Accounts, dutil.Error) {
 // it returns the bank account, or if an error occurs an error is returned.
 func (s *Service) CreateAccount(b Account) (Account, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/account"
+	s.URL.Path = "/account"
 	// marshal data to payload reader
 	p, e := dutil.MarshalReader(b)
 	if e != nil {
@@ -61,7 +61,7 @@ func (s *Service) CreateAccount(b Account) (Account, dutil.Error) {
 	}
 
 	// do request
-	r, e := s.serv.NewRequest("POST", s.serv.URL.String(), nil, p)
+	r, e := s.DoRequest("POST", s.URL, nil, nil, p)
 	if e != nil {
 		return Account{}, e
 	}
@@ -74,7 +74,7 @@ func (s *Service) CreateAccount(b Account) (Account, dutil.Error) {
 		Errors map[string][]string
 	}{}
 	// decode the response
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return Account{}, e
 	}
@@ -93,14 +93,14 @@ func (s *Service) CreateAccount(b Account) (Account, dutil.Error) {
 // UpdateAccount updates a specific bank account's data.
 func (s *Service) UpdateAccount(b Account) (Account, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/account/-"
+	s.URL.Path = "/account/-"
 	// marshal payload reader
 	p, e := dutil.MarshalReader(b)
 	if e != nil {
 		return Account{}, e
 	}
 	// do request
-	r, e := s.serv.NewRequest("PUT", s.serv.URL.String(), nil, p)
+	r, e := s.DoRequest("PUT", s.URL, nil, nil, p)
 	if e != nil {
 		return Account{}, e
 	}
@@ -113,7 +113,7 @@ func (s *Service) UpdateAccount(b Account) (Account, dutil.Error) {
 		Errors map[string][]string `json:"errors"`
 	}{}
 	// decode response
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return Account{}, e
 	}
@@ -132,12 +132,11 @@ func (s *Service) UpdateAccount(b Account) (Account, dutil.Error) {
 // DeleteAccount deletes a specific bank account's data.
 func (s *Service) DeleteAccount(UUID uuid.UUID) dutil.Error {
 	// set path
-	s.serv.URL.Path = "/account/-"
+	s.URL.Path = "/account/-"
 	qs := url.Values{"uuid": {UUID.String()}}
-	s.serv.URL.RawQuery = qs.Encode()
 
 	// do request
-	r, e := s.serv.NewRequest("DELETE", s.serv.URL.String(), nil, nil)
+	r, e := s.DoRequest("DELETE", s.URL, qs, nil, nil)
 	if e != nil {
 		return e
 	}
@@ -147,7 +146,7 @@ func (s *Service) DeleteAccount(UUID uuid.UUID) dutil.Error {
 	}{}
 
 	// decode the response
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return e
 	}

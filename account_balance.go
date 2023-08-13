@@ -3,6 +3,7 @@ package bankserv
 import (
 	"github.com/dottics/dutil"
 	"github.com/google/uuid"
+	"github.com/johannesscr/micro/msp"
 	"net/http"
 	"time"
 )
@@ -11,18 +12,17 @@ import (
 // on the bank account's UUID passed to the function and returns a pointer to
 // the AccountBalance value. The balance returned is the first balance before
 // the date passed to the function.
-func (s *Service) GetAccountBalance(UUID uuid.UUID, date time.Time, headers *http.Header) (AccountBalance, dutil.Error) {
+func (s *Service) GetAccountBalance(UUID uuid.UUID, date time.Time) (AccountBalance, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/account/-/balance"
+	s.URL.Path = "/account/-/balance"
 
 	// set query string
-	qs := s.serv.URL.Query()
+	qs := s.URL.Query()
 	qs.Add("uuid", UUID.String())
 	qs.Add("date", date.Format("2006-01-02"))
-	s.serv.URL.RawQuery = qs.Encode()
 
 	// do request
-	r, e := s.serv.NewRequest(http.MethodGet, s.serv.URL.String(), *headers, nil)
+	r, e := s.DoRequest(http.MethodGet, s.URL, qs, nil, nil)
 	if e != nil {
 		return AccountBalance{}, e
 	}
@@ -37,7 +37,7 @@ func (s *Service) GetAccountBalance(UUID uuid.UUID, date time.Time, headers *htt
 	}{}
 
 	// decode response
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return AccountBalance{}, e
 	}
@@ -57,9 +57,9 @@ func (s *Service) GetAccountBalance(UUID uuid.UUID, date time.Time, headers *htt
 // CreateAccountBalance creates a new account balance for a specific bank
 // account based on the bank account's UUID passed to the function and returns
 // a pointer to the AccountBalance value.
-func (s *Service) CreateAccountBalance(ab *AccountBalance, headers *http.Header) (AccountBalance, dutil.Error) {
+func (s *Service) CreateAccountBalance(ab *AccountBalance) (AccountBalance, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/account/-/balance"
+	s.URL.Path = "/account/-/balance"
 
 	// marshal the account balance
 	p, e := dutil.MarshalReader(ab)
@@ -68,7 +68,7 @@ func (s *Service) CreateAccountBalance(ab *AccountBalance, headers *http.Header)
 	}
 
 	// do request
-	r, e := s.serv.NewRequest(http.MethodPost, s.serv.URL.String(), *headers, p)
+	r, e := s.DoRequest(http.MethodPost, s.URL, nil, nil, p)
 	if e != nil {
 		return AccountBalance{}, e
 	}
@@ -83,7 +83,7 @@ func (s *Service) CreateAccountBalance(ab *AccountBalance, headers *http.Header)
 	}{}
 
 	// decode response
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return AccountBalance{}, e
 	}

@@ -104,8 +104,8 @@ func TestService_GetAccountTransactions(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 	UUID := uuid.MustParse("09bc087c-85b8-4c05-b14b-835cdbd9825c")
 
 	for i, tc := range tt {
@@ -213,8 +213,8 @@ func TestService_GetEntityTransactions(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 	UUID := uuid.MustParse("09bc087c-85b8-4c05-b14b-835cdbd9825c")
 
 	for i, tc := range tt {
@@ -285,8 +285,8 @@ func TestService_GetTransaction(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 
 	for i, tc := range tt {
 		name := fmt.Sprintf("%d %s", i, tc.name)
@@ -394,8 +394,8 @@ func TestService_CreateTransaction(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 
 	for i, tc := range tt {
 		name := fmt.Sprintf("%d %s", i, tc.name)
@@ -496,8 +496,8 @@ func TestService_UpdateTransaction(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 
 	for i, tc := range tt {
 		name := fmt.Sprintf("%d %s", i, tc.name)
@@ -567,8 +567,8 @@ func TestService_DeleteTransaction(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
 
 	for i, tc := range tt {
 		name := fmt.Sprintf("%d %s", i, tc.name)
@@ -693,8 +693,11 @@ func TestService_CreateTransactionBatch(t *testing.T) {
 		},
 	}
 
-	s := NewService("")
-	ms := microtest.MockServer(s.serv)
+	s := NewService(Config{
+		APIKey: "my-token",
+		Header: http.Header{"x-dot-api-key": []string{"my-token"}},
+	})
+	ms := microtest.MockServer(s)
 	defer ms.Server.Close()
 
 	for i, tc := range tests {
@@ -702,10 +705,7 @@ func TestService_CreateTransactionBatch(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			ms.Append(tc.exchange)
 
-			xt, e := s.CreateTransactionBatch(
-				tc.txnIn,
-				&http.Header{"x-dot-api-key": []string{"my-token"}},
-			)
+			xt, e := s.CreateTransactionBatch(tc.txnIn)
 
 			if !dutil.ErrorEqual(tc.e, e) {
 				t.Errorf("expected error %v got %v", tc.e, e)

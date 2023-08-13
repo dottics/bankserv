@@ -2,13 +2,23 @@ package bankserv
 
 import (
 	"github.com/johannesscr/micro/msp"
+	"net/http"
+	"net/url"
 )
 
 type Service struct {
-	serv *msp.Service
+	msp.Service
 }
 
 const microServiceName string = "bank"
+
+// Config defined the configuration for the `bankserv` package.
+type Config struct {
+	UserToken string
+	APIKey    string
+	Values    url.Values
+	Header    http.Header
+}
 
 // NewService creates a microservice-package (msp) instance. The msp
 // is an instance that loads the environmental variables to be able
@@ -18,9 +28,15 @@ const microServiceName string = "bank"
 // Once a user has logged in the user receives a token, that token needs
 // to be passed to the new service so that the token can be added to headers
 // to gain access to the microservice.
-func NewService(token string) *Service {
+func NewService(config Config) *Service {
 	s := &Service{
-		serv: msp.NewService(token, microServiceName),
+		Service: *msp.NewService(msp.Config{
+			Name:      microServiceName,
+			UserToken: config.UserToken,
+			APIKey:    config.APIKey,
+			Values:    config.Values,
+			Header:    config.Header,
+		}),
 	}
 	return s
 }

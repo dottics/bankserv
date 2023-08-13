@@ -1,14 +1,16 @@
 package bankserv
 
-import "github.com/dottics/dutil"
+import (
+	"github.com/dottics/dutil"
+	"github.com/johannesscr/micro/msp"
+)
 
 // GetBanks gets all the banks from the bank-service.
 func (s *Service) GetBanks() (Banks, dutil.Error) {
 	// get access to the msp service
-	ms := s.serv
 	// create and make request
-	ms.URL.Path = "/bank"
-	res, e := ms.NewRequest("GET", ms.URL.String(), nil, nil)
+	s.URL.Path = "/bank"
+	res, e := s.DoRequest("GET", s.URL, nil, nil, nil)
 	if e != nil {
 		return Banks{}, e
 	}
@@ -23,7 +25,7 @@ func (s *Service) GetBanks() (Banks, dutil.Error) {
 	}{}
 
 	// decode the response
-	_, e = ms.Decode(res, &resp)
+	_, e = msp.Decode(res, &resp)
 	if e != nil {
 		return Banks{}, e
 	}

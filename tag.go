@@ -3,6 +3,7 @@ package bankserv
 import (
 	"github.com/dottics/dutil"
 	"github.com/google/uuid"
+	"github.com/johannesscr/micro/msp"
 	"net/url"
 )
 
@@ -10,8 +11,8 @@ import (
 // organisations for the classification of items.
 func (s *Service) GetTags() (Tags, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/tag"
-	r, e := s.serv.NewRequest("GET", s.serv.URL.String(), nil, nil)
+	s.URL.Path = "/tag"
+	r, e := s.DoRequest("GET", s.URL, nil, nil, nil)
 	if e != nil {
 		return Tags{}, e
 	}
@@ -24,7 +25,7 @@ func (s *Service) GetTags() (Tags, dutil.Error) {
 		Errors dutil.Errors
 	}{}
 	// decode response
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return Tags{}, e
 	}
@@ -44,12 +45,11 @@ func (s *Service) GetTags() (Tags, dutil.Error) {
 // an empty slice is returned and a nonzero error.
 func (s *Service) GetEntityTags(UUID uuid.UUID) (Tags, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/tag/entity/-"
+	s.URL.Path = "/tag/entity/-"
 	// set query string
 	qs := url.Values{"uuid": {UUID.String()}}
-	s.serv.URL.RawQuery = qs.Encode()
 	// do request
-	r, e := s.serv.NewRequest("GET", s.serv.URL.String(), nil, nil)
+	r, e := s.DoRequest("GET", s.URL, qs, nil, nil)
 	if e != nil {
 		return Tags{}, e
 	}
@@ -62,7 +62,7 @@ func (s *Service) GetEntityTags(UUID uuid.UUID) (Tags, dutil.Error) {
 		Errors dutil.Errors
 	}{}
 	// decode response
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return Tags{}, e
 	}
@@ -80,14 +80,14 @@ func (s *Service) GetEntityTags(UUID uuid.UUID) (Tags, dutil.Error) {
 // CreateTag creates a new Tag based on the tag data passed to the method.
 func (s *Service) CreateTag(t Tag) (Tag, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/tag"
+	s.URL.Path = "/tag"
 	// marshal payload
 	p, e := dutil.MarshalReader(t)
 	if e != nil {
 		return Tag{}, e
 	}
 	// do request
-	r, e := s.serv.NewRequest("POST", s.serv.URL.String(), nil, p)
+	r, e := s.DoRequest("POST", s.URL, nil, nil, p)
 	if e != nil {
 		return Tag{}, e
 	}
@@ -100,7 +100,7 @@ func (s *Service) CreateTag(t Tag) (Tag, dutil.Error) {
 		Errors dutil.Errors `json:"errors"`
 	}{}
 	// decode response
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return Tag{}, e
 	}
@@ -118,14 +118,14 @@ func (s *Service) CreateTag(t Tag) (Tag, dutil.Error) {
 // UpdateTag updates a tag's data with the tag data passed to the method.
 func (s *Service) UpdateTag(t Tag) (Tag, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/tag/-"
+	s.URL.Path = "/tag/-"
 	// marshal payload
 	p, e := dutil.MarshalReader(t)
 	if e != nil {
 		return Tag{}, e
 	}
 
-	r, e := s.serv.NewRequest("PUT", s.serv.URL.String(), nil, p)
+	r, e := s.DoRequest("PUT", s.URL, nil, nil, p)
 	if e != nil {
 		return Tag{}, e
 	}
@@ -138,7 +138,7 @@ func (s *Service) UpdateTag(t Tag) (Tag, dutil.Error) {
 		Errors dutil.Errors `json:"errors"`
 	}{}
 	// decode response
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return Tag{}, e
 	}
@@ -157,13 +157,12 @@ func (s *Service) UpdateTag(t Tag) (Tag, dutil.Error) {
 // DeleteTag deletes a tag based on the UUID passed to the method.
 func (s *Service) DeleteTag(UUID uuid.UUID) dutil.Error {
 	// set path
-	s.serv.URL.Path = "/tag/-"
+	s.URL.Path = "/tag/-"
 	// set query string
 	qs := url.Values{"uuid": {UUID.String()}}
-	s.serv.URL.RawQuery = qs.Encode()
 
 	// do request
-	r, e := s.serv.NewRequest("DELETE", s.serv.URL.String(), nil, nil)
+	r, e := s.DoRequest("DELETE", s.URL, qs, nil, nil)
 	if e != nil {
 		return e
 	}
@@ -172,7 +171,7 @@ func (s *Service) DeleteTag(UUID uuid.UUID) dutil.Error {
 		Errors dutil.Errors `json:"errors"`
 	}{}
 	// decode response
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return e
 	}

@@ -3,6 +3,7 @@ package bankserv
 import (
 	"github.com/dottics/dutil"
 	"github.com/google/uuid"
+	"github.com/johannesscr/micro/msp"
 	"net/http"
 	"net/url"
 )
@@ -13,12 +14,11 @@ import (
 // bank account has no transactions an empty slice will be returned.
 func (s *Service) GetAccountTransactions(UUID uuid.UUID) (Transactions, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/transaction/account/-"
+	s.URL.Path = "/transaction/account/-"
 	// set query string
 	qs := url.Values{"uuid": {UUID.String()}}
-	s.serv.URL.RawQuery = qs.Encode()
 	// do request
-	r, e := s.serv.NewRequest("GET", s.serv.URL.String(), nil, nil)
+	r, e := s.DoRequest("GET", s.URL, qs, nil, nil)
 	if e != nil {
 		return Transactions{}, e
 	}
@@ -30,7 +30,7 @@ func (s *Service) GetAccountTransactions(UUID uuid.UUID) (Transactions, dutil.Er
 		Errors dutil.Errors `json:"errors"`
 	}{}
 	// decode the response
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return Transactions{}, e
 	}
@@ -56,16 +56,15 @@ func (s *Service) GetAccountTransactions(UUID uuid.UUID) (Transactions, dutil.Er
 //   - end_date: string (date)
 func (s *Service) GetEntityTransactions(UUID uuid.UUID, query url.Values) (Transactions, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/transaction/entity/-"
+	s.URL.Path = "/transaction/entity/-"
 	// set query string
 	qs := url.Values{"uuid": {UUID.String()}}
 	if query != nil {
 		qs = query
 		qs.Set("uuid", UUID.String())
 	}
-	s.serv.URL.RawQuery = qs.Encode()
 
-	r, e := s.serv.NewRequest("GET", s.serv.URL.String(), nil, nil)
+	r, e := s.DoRequest("GET", s.URL, qs, nil, nil)
 	if e != nil {
 		return Transactions{}, e
 	}
@@ -78,7 +77,7 @@ func (s *Service) GetEntityTransactions(UUID uuid.UUID, query url.Values) (Trans
 		Errors dutil.Errors `json:"errors"`
 	}{}
 
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return Transactions{}, e
 	}
@@ -97,12 +96,11 @@ func (s *Service) GetEntityTransactions(UUID uuid.UUID, query url.Values) (Trans
 // on the UUID provided.
 func (s *Service) GetTransaction(UUID uuid.UUID) (Transaction, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/transaction/-"
+	s.URL.Path = "/transaction/-"
 	// create query string parameters
 	qs := url.Values{"uuid": []string{UUID.String()}}
-	s.serv.URL.RawQuery = qs.Encode()
 	// do request
-	r, e := s.serv.NewRequest("GET", s.serv.URL.String(), nil, nil)
+	r, e := s.DoRequest("GET", s.URL, qs, nil, nil)
 	if e != nil {
 		return Transaction{}, e
 	}
@@ -116,7 +114,7 @@ func (s *Service) GetTransaction(UUID uuid.UUID) (Transaction, dutil.Error) {
 	}{}
 
 	// decode response
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return Transaction{}, e
 	}
@@ -135,14 +133,14 @@ func (s *Service) GetTransaction(UUID uuid.UUID) (Transaction, dutil.Error) {
 // transaction data that is passed to the function.
 func (s *Service) CreateTransaction(t Transaction) (Transaction, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/transaction"
+	s.URL.Path = "/transaction"
 	// marshal payload
 	p, e := dutil.MarshalReader(t)
 	if e != nil {
 		return Transaction{}, e
 	}
 	// do request
-	r, e := s.serv.NewRequest("POST", s.serv.URL.String(), nil, p)
+	r, e := s.DoRequest("POST", s.URL, nil, nil, p)
 	if e != nil {
 		return Transaction{}, e
 	}
@@ -155,7 +153,7 @@ func (s *Service) CreateTransaction(t Transaction) (Transaction, dutil.Error) {
 		Errors dutil.Errors `json:"errors"`
 	}{}
 	// decode response
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return Transaction{}, e
 	}
@@ -175,7 +173,7 @@ func (s *Service) CreateTransaction(t Transaction) (Transaction, dutil.Error) {
 // transaction's UUID and transaction data that is passed to the function.
 func (s *Service) UpdateTransaction(t Transaction) (Transaction, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/transaction/-"
+	s.URL.Path = "/transaction/-"
 	// read payload
 	p, e := dutil.MarshalReader(t)
 	if e != nil {
@@ -183,7 +181,7 @@ func (s *Service) UpdateTransaction(t Transaction) (Transaction, dutil.Error) {
 	}
 
 	// do request
-	r, e := s.serv.NewRequest("PUT", s.serv.URL.String(), nil, p)
+	r, e := s.DoRequest("PUT", s.URL, nil, nil, p)
 
 	type Data struct {
 		Transaction `json:"transaction"`
@@ -193,7 +191,7 @@ func (s *Service) UpdateTransaction(t Transaction) (Transaction, dutil.Error) {
 		Errors dutil.Errors `json:"errors"`
 	}{}
 	// decode response
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return Transaction{}, e
 	}
@@ -214,12 +212,11 @@ func (s *Service) UpdateTransaction(t Transaction) (Transaction, dutil.Error) {
 // transaction has successfully been deleted.
 func (s *Service) DeleteTransaction(UUID uuid.UUID) dutil.Error {
 	// set path
-	s.serv.URL.Path = "/transaction/-"
+	s.URL.Path = "/transaction/-"
 	// set query string
 	qs := url.Values{"uuid": {UUID.String()}}
-	s.serv.URL.RawQuery = qs.Encode()
 
-	r, e := s.serv.NewRequest("DELETE", s.serv.URL.String(), nil, nil)
+	r, e := s.DoRequest("DELETE", s.URL, qs, nil, nil)
 	if e != nil {
 		return e
 	}
@@ -228,7 +225,7 @@ func (s *Service) DeleteTransaction(UUID uuid.UUID) dutil.Error {
 		Errors dutil.Errors `json:"errors"`
 	}{}
 	// decode response
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return e
 	}
@@ -250,8 +247,8 @@ func (s *Service) DeleteTransaction(UUID uuid.UUID) dutil.Error {
 // only processing of data from entity/service sources (such as Open Banking).
 // Also, if the AccountUUID does not exist, the transaction will simply be
 // skipped.
-func (s *Service) CreateTransactionBatch(xt *Transactions, headers *http.Header) (*Transactions, dutil.Error) {
-	s.serv.URL.Path = "/transaction/batch"
+func (s *Service) CreateTransactionBatch(xt *Transactions) (*Transactions, dutil.Error) {
+	s.URL.Path = "/transaction/batch"
 	payload := struct {
 		Transactions Transactions `json:"transactions"`
 	}{Transactions: *xt}
@@ -261,7 +258,7 @@ func (s *Service) CreateTransactionBatch(xt *Transactions, headers *http.Header)
 		return nil, e
 	}
 
-	r, e := s.serv.NewRequest(http.MethodPost, s.serv.URL.String(), *headers, p)
+	r, e := s.DoRequest(http.MethodPost, s.URL, nil, nil, p)
 	if e != nil {
 		return nil, e
 	}
@@ -273,7 +270,7 @@ func (s *Service) CreateTransactionBatch(xt *Transactions, headers *http.Header)
 		Data   Data         `json:"data"`
 		Errors dutil.Errors `json:"errors"`
 	}{}
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return nil, e
 	}

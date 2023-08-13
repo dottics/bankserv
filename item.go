@@ -3,6 +3,7 @@ package bankserv
 import (
 	"github.com/dottics/dutil"
 	"github.com/google/uuid"
+	"github.com/johannesscr/micro/msp"
 	"net/url"
 )
 
@@ -10,14 +11,14 @@ import (
 // to the function.
 func (s *Service) CreateItem(i Item) (Item, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/item"
+	s.URL.Path = "/item"
 	// marshal payload
 	p, e := dutil.MarshalReader(i)
 	if e != nil {
 		return Item{}, e
 	}
 	// do request
-	r, e := s.serv.NewRequest("POST", s.serv.URL.String(), nil, p)
+	r, e := s.DoRequest("POST", s.URL, nil, nil, p)
 	if e != nil {
 		return Item{}, e
 	}
@@ -30,7 +31,7 @@ func (s *Service) CreateItem(i Item) (Item, dutil.Error) {
 		Errors dutil.Errors `json:"errors"`
 	}{}
 	// decode the response
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return Item{}, e
 	}
@@ -48,7 +49,7 @@ func (s *Service) CreateItem(i Item) (Item, dutil.Error) {
 // UpdateItem updates an Item based on the item data passed to the function.
 func (s *Service) UpdateItem(i Item) (Item, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/item/-"
+	s.URL.Path = "/item/-"
 	// marshal payload
 	p, e := dutil.MarshalReader(i)
 	if e != nil {
@@ -56,7 +57,7 @@ func (s *Service) UpdateItem(i Item) (Item, dutil.Error) {
 	}
 
 	// do request
-	r, e := s.serv.NewRequest("PUT", s.serv.URL.String(), nil, p)
+	r, e := s.DoRequest("PUT", s.URL, nil, nil, p)
 	if e != nil {
 		return Item{}, e
 	}
@@ -69,7 +70,7 @@ func (s *Service) UpdateItem(i Item) (Item, dutil.Error) {
 		Errors dutil.Errors `json:"errors"`
 	}{}
 	// decode response
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return Item{}, e
 	}
@@ -90,12 +91,11 @@ func (s *Service) UpdateItem(i Item) (Item, dutil.Error) {
 // if any error has occurred.
 func (s *Service) DeleteItem(UUID uuid.UUID) dutil.Error {
 	// set path
-	s.serv.URL.Path = "/item/-"
+	s.URL.Path = "/item/-"
 	// set query string
 	qs := url.Values{"uuid": {UUID.String()}}
-	s.serv.URL.RawQuery = qs.Encode()
 	// do request
-	r, e := s.serv.NewRequest("DELETE", s.serv.URL.String(), nil, nil)
+	r, e := s.DoRequest("DELETE", s.URL, qs, nil, nil)
 	if e != nil {
 		return e
 	}
@@ -103,7 +103,7 @@ func (s *Service) DeleteItem(UUID uuid.UUID) dutil.Error {
 	res := struct {
 		Errors dutil.Errors `json:"errors"`
 	}{}
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return e
 	}
@@ -123,7 +123,7 @@ func (s *Service) DeleteItem(UUID uuid.UUID) dutil.Error {
 // or and error if an error occurs.
 func (s *Service) AddItemTags(itemUUID uuid.UUID, tagsUUID []uuid.UUID) (Item, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/item/-/tag"
+	s.URL.Path = "/item/-/tag"
 	payload := struct {
 		UUID     uuid.UUID   `json:"uuid"`
 		TagUUIDs []uuid.UUID `json:"tag_uuids"`
@@ -136,7 +136,7 @@ func (s *Service) AddItemTags(itemUUID uuid.UUID, tagsUUID []uuid.UUID) (Item, d
 		return Item{}, e
 	}
 	// do request
-	r, e := s.serv.NewRequest("POST", s.serv.URL.String(), nil, p)
+	r, e := s.DoRequest("POST", s.URL, nil, nil, p)
 	if e != nil {
 		return Item{}, e
 	}
@@ -148,7 +148,7 @@ func (s *Service) AddItemTags(itemUUID uuid.UUID, tagsUUID []uuid.UUID) (Item, d
 		Data   Data         `json:"data"`
 		Errors dutil.Errors `json:"errors"`
 	}{}
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return Item{}, e
 	}
@@ -168,7 +168,7 @@ func (s *Service) AddItemTags(itemUUID uuid.UUID, tagsUUID []uuid.UUID) (Item, d
 // value pointed to or an error if an error occurs.
 func (s *Service) RemoveItemTags(itemUUID uuid.UUID, tagsUUID []uuid.UUID) (Item, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/item/-/tag/-"
+	s.URL.Path = "/item/-/tag/-"
 	// set query string
 	xTagUUID := make([]string, 0)
 	for _, tagUUID := range tagsUUID {
@@ -178,9 +178,8 @@ func (s *Service) RemoveItemTags(itemUUID uuid.UUID, tagsUUID []uuid.UUID) (Item
 		"uuid":      []string{itemUUID.String()},
 		"tag_uuids": xTagUUID,
 	}
-	s.serv.URL.RawQuery = qs.Encode()
 	// do request
-	r, e := s.serv.NewRequest("DELETE", s.serv.URL.String(), nil, nil)
+	r, e := s.DoRequest("DELETE", s.URL, qs, nil, nil)
 	if e != nil {
 		return Item{}, e
 	}
@@ -192,7 +191,7 @@ func (s *Service) RemoveItemTags(itemUUID uuid.UUID, tagsUUID []uuid.UUID) (Item
 		Data   Data         `json:"data"`
 		Errors dutil.Errors `json:"errors"`
 	}{}
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return Item{}, e
 	}
@@ -209,7 +208,7 @@ func (s *Service) RemoveItemTags(itemUUID uuid.UUID, tagsUUID []uuid.UUID) (Item
 
 func (s *Service) UpdateItemTags(itemUUID uuid.UUID, tagsUUID []uuid.UUID) (Item, dutil.Error) {
 	// set path
-	s.serv.URL.Path = "/item/-/tag/-"
+	s.URL.Path = "/item/-/tag/-"
 	// construct the payload object
 	payload := struct {
 		UUID     uuid.UUID   `json:"uuid"`
@@ -223,7 +222,7 @@ func (s *Service) UpdateItemTags(itemUUID uuid.UUID, tagsUUID []uuid.UUID) (Item
 		return Item{}, e
 	}
 	// do request
-	r, e := s.serv.NewRequest("PUT", s.serv.URL.String(), nil, p)
+	r, e := s.DoRequest("PUT", s.URL, nil, nil, p)
 	if e != nil {
 		return Item{}, e
 	}
@@ -235,7 +234,7 @@ func (s *Service) UpdateItemTags(itemUUID uuid.UUID, tagsUUID []uuid.UUID) (Item
 		Data   Data         `json:"data"`
 		Errors dutil.Errors `json:"errors"`
 	}{}
-	_, e = s.serv.Decode(r, &res)
+	_, e = msp.Decode(r, &res)
 	if e != nil {
 		return Item{}, e
 	}
