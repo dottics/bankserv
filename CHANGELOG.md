@@ -5,6 +5,12 @@ The format is based on [Keep a changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.7.0] - 2023-08-14
+### Updated
+- The types to include `omitempty` on all fields. This is to ensure that the
+  `json` package does not encode empty fields. This allows for partial updates
+  of fields.
+
 ## [1.6.0] - 2023-08-13
 ### Updated
 - The `Service` type and `NewService` function to accept a new `Config` type
