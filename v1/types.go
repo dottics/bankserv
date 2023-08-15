@@ -10,7 +10,7 @@ type Bank struct {
 	Name       string    `json:"name,omitempty"`
 	BranchCode string    `json:"branch_code,omitempty"`
 	SwiftCode  string    `json:"swift_code,omitempty"`
-	Active     bool      `json:"active,omitempty"`
+	Active     bool      `json:"active"`
 	CreateDate time.Time `json:"create_date,omitempty"`
 	UpdateDate time.Time `json:"update_date,omitempty"`
 }
@@ -20,7 +20,7 @@ type Tag struct {
 	UUID       uuid.UUID `json:"uuid,omitempty"`
 	EntityUUID uuid.UUID `json:"entity_uuid,omitempty"`
 	Tag        string    `json:"tag,omitempty"`
-	Active     bool      `json:"active,omitempty"`
+	Active     bool      `json:"active"`
 	CreateDate time.Time `json:"create_date,omitempty"`
 	UpdateDate time.Time `json:"update_date,omitempty"`
 }
@@ -32,11 +32,11 @@ type Item struct {
 	Description     string    `json:"description,omitempty"`
 	SKU             string    `json:"sku,omitempty"`
 	Unit            string    `json:"unit,omitempty"`
-	Quantity        float32   `json:"quantity,omitempty"`
-	Amount          float32   `json:"amount,omitempty"`
-	Discount        float32   `json:"discount,omitempty"`
+	Quantity        float32   `json:"quantity"`
+	Amount          float32   `json:"amount"`
+	Discount        float32   `json:"discount"`
 	Tags            []Tag     `json:"tags,omitempty"`
-	Active          bool      `json:"active,omitempty"`
+	Active          bool      `json:"active"`
 	CreateDate      time.Time `json:"create_date,omitempty"`
 	UpdateDate      time.Time `json:"update_date,omitempty"`
 }
@@ -52,11 +52,11 @@ type Transaction struct {
 	Date         time.Time `json:"date,omitempty"`
 	BusinessName string    `json:"business_name,omitempty"`
 	Description  string    `json:"description,omitempty"`
-	Debit        bool      `json:"debit,omitempty"`
-	Credit       bool      `json:"credit,omitempty"`
-	Amount       float32   `json:"amount,omitempty"`
+	Debit        bool      `json:"debit"`
+	Credit       bool      `json:"credit"`
+	Amount       float32   `json:"amount"`
 	Items        []Item    `json:"items,omitempty"`
-	Active       bool      `json:"active,omitempty"`
+	Active       bool      `json:"active"`
 	CreateDate   time.Time `json:"create_date,omitempty"`
 	UpdateDate   time.Time `json:"update_date,omitempty"`
 }
@@ -73,7 +73,7 @@ type Account struct {
 	Alias             string    `json:"alias,omitempty"`
 	Number            string    `json:"number,omitempty"`
 	IntegrationStatus string    `json:"integration_status,omitempty"`
-	Active            bool      `json:"active,omitempty"`
+	Active            bool      `json:"active"`
 	CreateDate        time.Time `json:"create_date,omitempty"`
 	UpdateDate        time.Time `json:"update_date,omitempty"`
 }
@@ -85,7 +85,7 @@ type AccountBalance struct {
 	AccountUUID uuid.UUID `json:"account_uuid,omitempty"`
 	Date        time.Time `json:"date,omitempty"`
 	Balance     float32   `json:"balance,omitempty"`
-	Active      bool      `json:"active,omitempty"`
+	Active      bool      `json:"active"`
 }
 
 // timeMustParse is a function the parses a time string formatted based on the
