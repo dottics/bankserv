@@ -91,7 +91,7 @@ func (s *Service) CreateAccount(b Account) (Account, dutil.Error) {
 }
 
 // UpdateAccount updates a specific bank account's data.
-func (s *Service) UpdateAccount(b Account) (Account, dutil.Error) {
+func (s *Service) UpdateAccount(b UpdateAccount) (Account, dutil.Error) {
 	// set path
 	s.URL.Path = "/account/-"
 	// marshal payload reader

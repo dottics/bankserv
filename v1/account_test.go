@@ -16,6 +16,14 @@ var entityAccount = Account{
 	Name:       "private bank account",
 	Alias:      "personal account",
 }
+var entityUpdateAccount = UpdateAccount{
+	UUID:       uuid.MustParse("e6b7f986-307c-4147-a34e-f924790799bb"),
+	BankUUID:   uuid.MustParse("344a4aa5-1935-4c28-973e-d74247d8db91"),
+	EntityUUID: uuid.MustParse("e4bd194d-41e7-4f27-a4a8-161685a9b8b8"),
+	Number:     "098765432109",
+	Name:       "private bank account",
+	Alias:      "personal account",
+}
 var bank = Bank{
 	UUID:       uuid.MustParse("344a4aa5-1935-4c28-973e-d74247d8db91"),
 	Name:       "investec",
@@ -303,14 +311,14 @@ func TestService_CreateAccount(t *testing.T) {
 func TestService_UpdateAccount(t *testing.T) {
 	tt := []struct {
 		name     string
-		account  Account // payload data
+		account  UpdateAccount // payload data
 		exchange *microtest.Exchange
 		eAccount Account // expected bank account
 		e        dutil.Error
 	}{
 		{
 			name:    "permission required",
-			account: entityAccount,
+			account: entityUpdateAccount,
 			exchange: &microtest.Exchange{
 				Response: microtest.Response{
 					Status: 403,
