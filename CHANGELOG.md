@@ -5,6 +5,15 @@ The format is based on [Keep a changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.8.0] - 2023-08-16
+### Added
+- The `UpdateAccount` type which will omit fields that are not the zero value.
+
+### Fixed
+- The to restore the other type which removes the `omiteempty` tag from the
+  struct. This is because we want to ensure that the fields are always populated
+  unless intentionally done so with a type that allows for fields to be omitted.
+
 ## [1.7.1] - 2023-08-15
 ### Fixed
 - Update the types whose fields and nil values would be omitted by the `json`
