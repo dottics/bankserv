@@ -27,18 +27,20 @@ type Tag struct {
 type Tags []Tag
 
 type Item struct {
-	UUID            uuid.UUID `json:"uuid"`
-	TransactionUUID uuid.UUID `json:"transaction_uuid"`
-	Description     string    `json:"description"`
-	SKU             string    `json:"sku"`
-	Unit            string    `json:"unit"`
-	Quantity        float32   `json:"quantity"`
-	Amount          float32   `json:"amount"`
-	Discount        float32   `json:"discount"`
-	Tags            []Tag     `json:"tags"`
-	Active          bool      `json:"active"`
-	CreateDate      time.Time `json:"create_date"`
-	UpdateDate      time.Time `json:"update_date"`
+	UUID               uuid.UUID `json:"uuid"`
+	TransactionUUID    uuid.UUID `json:"transaction_uuid"`
+	Description        string    `json:"description"`
+	SKU                string    `json:"sku"`
+	Unit               string    `json:"unit"`
+	Quantity           float32   `json:"quantity"`
+	Amount             float32   `json:"amount"`
+	Discount           float32   `json:"discount"`
+	Category           string    `json:"category"`
+	PredictionCategory string    `json:"prediction_category"`
+	Tags               []Tag     `json:"tags"`
+	Active             bool      `json:"active"`
+	CreateDate         time.Time `json:"create_date"`
+	UpdateDate         time.Time `json:"update_date"`
 }
 type Items []Item
 
