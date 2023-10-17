@@ -49,6 +49,12 @@ func EqualItem(a, b Item) bool {
 	if a.Active != b.Active {
 		return false
 	}
+	if a.Category != b.Category {
+		return false
+	}
+	if a.PredictionCategory != b.PredictionCategory {
+		return false
+	}
 	if !a.CreateDate.Equal(b.CreateDate) {
 		return false
 	}
