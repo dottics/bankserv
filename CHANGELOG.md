@@ -5,6 +5,14 @@ The format is based on [Keep a changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.8.1] - 2023-10-17
+### Updated
+- The `Item` struct to include the fields `category` and `prediction_category`.
+- The `CreateItem` method to include the fields `category` and
+  `prediction_category`.
+- The `UpdateItem` method to include the fields `category` and
+  `prediction_category`.
+
 ## [1.8.0] - 2023-08-16
 ### Added
 - The `UpdateAccount` type which will omit fields that are not the zero value.
