@@ -8,6 +8,145 @@ import (
 	"testing"
 )
 
+func TestService_GetCategoryItem(t *testing.T) {
+	tests := []struct {
+		name       string
+		entityUUID uuid.UUID
+		category   string
+		from       string
+		to         string
+		exchange   *microtest.Exchange
+		results    []ItemDate
+		e          dutil.Error
+	}{
+		{
+			name:       "permission required",
+			entityUUID: uuid.MustParse("8a6b6251-94b7-4593-8c27-9a50258cfc19"),
+			category:   "food",
+			from:       "2021-01-01",
+			to:         "2021-01-31",
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 403,
+					Body:   `{"message":"Forbidden: Unable to process request","data":[],"errors":{"permission":["Please ensure you have permission"]}}`,
+				},
+			},
+			results: []ItemDate{},
+			e: &dutil.Err{
+				Status: 403,
+				Errors: map[string][]string{
+					"permission": {"Please ensure you have permission"},
+				},
+			},
+		},
+		{
+			name:       "items found",
+			entityUUID: uuid.MustParse("8a6b6251-94b7-4593-8c27-9a50258cfc19"),
+			category:   "food",
+			from:       "2021-01-01",
+			to:         "2021-01-31",
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 200,
+					Body: `{
+						"message":"items found successfully",
+						"data":[
+							{
+								"item":{
+									"uuid":"d2b64e51-8b31-4cbd-be90-439ddb33c3b7",
+									"description":"item one",
+									"sku":"barcode-here",
+									"unit":"each",
+									"quantity":21.1,
+									"amount":12.3,
+									"discount":1.23,
+									"category":"food",
+									"prediction_category":"groceries",
+									"active":true
+								},
+								"date":"2021-01-01T00:00:00Z"
+							},
+							{
+								"item":{
+									"uuid":"c1d396ab-4e32-4d1e-9baf-48a10529cf80",
+									"description":"item two",
+									"sku":"barcode-here",
+									"unit":"each",
+									"quantity":2,
+									"amount":1300,
+									"discount":130,
+									"category":"food",
+									"prediction_category":"groceries",
+									"active":true
+								},
+								"date":"2021-02-01T00:00:00Z"
+							}
+						],
+						"errors":{}
+					}`,
+				},
+			},
+			results: []ItemDate{
+				{
+					Item: Item{
+						UUID:               uuid.MustParse("d2b64e51-8b31-4cbd-be90-439ddb33c3b7"),
+						Description:        "item one",
+						SKU:                "barcode-here",
+						Unit:               "each",
+						Quantity:           21.1,
+						Amount:             12.3,
+						Discount:           1.23,
+						Category:           "food",
+						PredictionCategory: "groceries",
+						Active:             true,
+					},
+					Date: timeMustParse("2021-01-01T00:00:00.000Z"),
+				},
+				{
+					Item: Item{
+						UUID:               uuid.MustParse("c1d396ab-4e32-4d1e-9baf-48a10529cf80"),
+						Description:        "item two",
+						SKU:                "barcode-here",
+						Unit:               "each",
+						Quantity:           2,
+						Amount:             1300,
+						Discount:           130,
+						Category:           "food",
+						PredictionCategory: "groceries",
+						Active:             true,
+					},
+					Date: timeMustParse("2021-02-01T00:00:00.000Z"),
+				},
+			},
+			e: nil,
+		},
+	}
+
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
+	defer ms.Server.Close()
+
+	for i, tc := range tests {
+		name := fmt.Sprintf("%d %s", i, tc.name)
+		t.Run(name, func(t *testing.T) {
+			ms.Append(tc.exchange)
+
+			it, e := s.GetCategoryItems(tc.entityUUID, tc.category, tc.from, tc.to)
+			if !dutil.ErrorEqual(tc.e, e) {
+				t.Errorf("expected error %v got %v", tc.e, e)
+			}
+			for i, it := range it {
+				if tc.results[i].Date != it.Date {
+					t.Errorf("expected date %v got %v", tc.results[i].Date, it.Date)
+				}
+				if !EqualItem(tc.results[i].Item, it.Item) {
+					t.Errorf("expected item\n%v\ngot\n%v", tc.results[i].Item, it.Item)
+				}
+			}
+		})
+	}
+}
+
 func TestService_CreateItem(t *testing.T) {
 	tt := []struct {
 		name     string
