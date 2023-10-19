@@ -5,7 +5,53 @@ import (
 	"github.com/google/uuid"
 	"github.com/johannesscr/micro/msp"
 	"net/url"
+	"time"
 )
+
+type ItemDate struct {
+	Item Item      `json:"item"`
+	Date time.Time `json:"date"`
+}
+
+// GetCategoryItems gets all the items for a specific category based on the
+// category's UUID passed to the function and returns a slice of Item. If an
+// error occurs the error will not be nil. If the category has no items an empty
+// slice will be returned.
+func (s *Service) GetCategoryItems(entityUUID uuid.UUID, category, from, to string) ([]ItemDate, dutil.Error) {
+	// set path
+	s.URL.Path = "/item/category/-"
+	// set query string
+	qs := url.Values{
+		"entity_uuid": {entityUUID.String()},
+		"category":    {category},
+		"from":        {from},
+		"to":          {to},
+	}
+	// do request
+	r, e := s.DoRequest("GET", s.URL, qs, nil, nil)
+	if e != nil {
+		return []ItemDate{}, e
+	}
+
+	res := struct {
+		Data   []ItemDate   `json:"data"`
+		Errors dutil.Errors `json:"errors"`
+	}{}
+	// decode the response
+	_, e = msp.Decode(r, &res)
+	if e != nil {
+		return []ItemDate{}, e
+	}
+
+	if r.StatusCode != 200 {
+		e := &dutil.Err{
+			Status: r.StatusCode,
+			Errors: res.Errors,
+		}
+		return []ItemDate{}, e
+	}
+	return res.Data, nil
+}
 
 // CreateItem creates a new Item for a transaction based on the item data passed
 // to the function.
