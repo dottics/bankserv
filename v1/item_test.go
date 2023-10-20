@@ -40,6 +40,25 @@ func TestService_GetCategoryItem(t *testing.T) {
 			},
 		},
 		{
+			name:       "items not found",
+			entityUUID: uuid.MustParse("8a6b6251-94b7-4593-8c27-9a50258cfc19"),
+			category:   "food",
+			from:       "2021-01-01",
+			to:         "2021-01-31",
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 200,
+					Body: `{
+						"message":"no items found",
+						"data":[],
+						"errors":{}
+					}`,
+				},
+			},
+			results: []ItemDate{},
+			e:       nil,
+		},
+		{
 			name:       "items found",
 			entityUUID: uuid.MustParse("8a6b6251-94b7-4593-8c27-9a50258cfc19"),
 			category:   "food",
