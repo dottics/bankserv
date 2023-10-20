@@ -19,7 +19,7 @@ type ItemDate struct {
 // slice will be returned.
 func (s *Service) GetCategoryItems(entityUUID uuid.UUID, category, from, to string) ([]ItemDate, dutil.Error) {
 	// set path
-	s.URL.Path = "/item/category/-"
+	s.URL.Path = "/item"
 	// set query string
 	qs := url.Values{
 		"entity_uuid": {entityUUID.String()},
