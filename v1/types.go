@@ -67,17 +67,18 @@ type Transactions []Transaction
 // Account is a description of an account, this should represent any account
 // be it a bank account, crypto wallet or anything similar.
 type Account struct {
-	UUID              uuid.UUID `json:"uuid,"`
-	BankUUID          uuid.UUID `json:"bank_uuid"`
-	Bank              Bank      `json:"bank"`
-	EntityUUID        uuid.UUID `json:"entity_uuid"`
-	Name              string    `json:"name"`
-	Alias             string    `json:"alias"`
-	Number            string    `json:"number"`
-	IntegrationStatus string    `json:"integration_status"`
-	Active            bool      `json:"active"`
-	CreateDate        time.Time `json:"create_date"`
-	UpdateDate        time.Time `json:"update_date"`
+	UUID              uuid.UUID      `json:"uuid,"`
+	BankUUID          uuid.UUID      `json:"bank_uuid"`
+	Bank              Bank           `json:"bank"`
+	EntityUUID        uuid.UUID      `json:"entity_uuid"`
+	Name              string         `json:"name"`
+	Alias             string         `json:"alias"`
+	Number            string         `json:"number"`
+	IntegrationStatus string         `json:"integration_status"`
+	Balance           AccountBalance `json:"balance"`
+	Active            bool           `json:"active"`
+	CreateDate        time.Time      `json:"create_date"`
+	UpdateDate        time.Time      `json:"update_date"`
 }
 type Accounts []Account
 

@@ -5,6 +5,11 @@ The format is based on [Keep a changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.8.4] - 2023-10-29
+### Updated
+- The `Account` struct to include the field `balance` which is the latest
+  `AccountBalance` for the account.
+
 ## [1.8.3] - 2023-10-19
 ### Fixed
 - The `GetCategoryItems` method's path.
