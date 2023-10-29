@@ -66,6 +66,7 @@ type Transactions []Transaction
 
 // Account is a description of an account, this should represent any account
 // be it a bank account, crypto wallet or anything similar.
+// The Balance field is the current balance of the account.
 type Account struct {
 	UUID              uuid.UUID      `json:"uuid,"`
 	BankUUID          uuid.UUID      `json:"bank_uuid"`
