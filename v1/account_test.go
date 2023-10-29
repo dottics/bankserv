@@ -110,6 +110,10 @@ func TestService_GetEntityAccounts(t *testing.T) {
 									"number":"012345678911",
 									"name":"private bank account",
 									"alias":"personal private bank account",
+									"balance": {
+										"balance": 1200.00,
+										"date": "2022-06-17T21:57:12.000Z"
+									},
 									"active":true,
 									"create_date":"2022-05-17T04:35:23.000Z",
 									"update_date":"2022-05-17T04:35:23.000Z"
@@ -129,6 +133,10 @@ func TestService_GetEntityAccounts(t *testing.T) {
 									"number":"012345678912",
 									"name":"savings account",
 									"alias":"personal savings account",
+									"balance": {
+										"balance": 1100.00,
+										"date": "2022-04-17T21:57:12.000Z"
+									},
 									"active":true,
 									"create_date":"2022-05-17T06:53:32.000Z",
 									"update_date":"2022-05-17T06:53:32.000Z"
@@ -147,6 +155,10 @@ func TestService_GetEntityAccounts(t *testing.T) {
 					Number:     "012345678911",
 					Name:       "private bank account",
 					Alias:      "personal private bank account",
+					Balance: AccountBalance{
+						Balance: 1200.00,
+						Date:    timeMustParse("2022-06-17T21:57:12.000Z"),
+					},
 					Active:     true,
 					CreateDate: timeMustParse("2022-05-17T04:35:23.000Z"),
 					UpdateDate: timeMustParse("2022-05-17T04:35:23.000Z"),
@@ -158,6 +170,10 @@ func TestService_GetEntityAccounts(t *testing.T) {
 					Number:     "012345678912",
 					Name:       "savings account",
 					Alias:      "personal savings account",
+					Balance: AccountBalance{
+						Balance: 1100.00,
+						Date:    timeMustParse("2022-04-17T21:57:12.000Z"),
+					},
 					Active:     true,
 					CreateDate: timeMustParse("2022-05-17T06:53:32.000Z"),
 					UpdateDate: timeMustParse("2022-05-17T06:53:32.000Z"),
