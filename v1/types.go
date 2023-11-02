@@ -115,3 +115,12 @@ type UpdateAccount struct {
 	IntegrationStatus string    `json:"integration_status,omitempty"`
 	Active            bool      `json:"active"`
 }
+
+// CategoryMonthTotal is a struct that describes the total amount spent on a
+// category for a specific month and year.
+type CategoryMonthTotal struct {
+	Category string  `json:"category"`
+	Total    float32 `json:"total"`
+	Year     int     `json:"year"`
+	Month    int     `json:"month"`
+}
