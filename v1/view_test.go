@@ -62,14 +62,16 @@ func TestService_GetCategoryMonthTotals(t *testing.T) {
 									"category":"bread",
 									"year":2022,
 									"month":3,
-									"total":200.01
+									"debit":23.01,
+									"credit":200.01
 								},
 								{
 									"entity_uuid":"1d912b91-4e4a-43fe-abab-1b6500334a0c",
 									"category":"food",
 									"year":2022,
 									"month":4,
-									"total":1300.98
+									"debit":1300.98,
+									"credit":13.98
 								}
 							]
 						},
@@ -82,13 +84,15 @@ func TestService_GetCategoryMonthTotals(t *testing.T) {
 					Category: "bread",
 					Year:     2022,
 					Month:    3,
-					Total:    200.01,
+					Debit:    23.01,
+					Credit:   200.01,
 				},
 				{
 					Category: "food",
 					Year:     2022,
 					Month:    4,
-					Total:    1300.98,
+					Debit:    1300.98,
+					Credit:   13.98,
 				},
 			},
 			e: nil,

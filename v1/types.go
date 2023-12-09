@@ -120,7 +120,14 @@ type UpdateAccount struct {
 // category for a specific month and year.
 type CategoryMonthTotal struct {
 	Category string  `json:"category"`
-	Total    float32 `json:"total"`
+	Debit    float32 `json:"debit"`
+	Credit   float32 `json:"credit"`
 	Year     int     `json:"year"`
 	Month    int     `json:"month"`
+}
+
+type MapCategory struct {
+	EntityUUID uuid.UUID `json:"entity_uuid"`
+	Replace    string    `json:"replace"`
+	With       string    `json:"with"`
 }

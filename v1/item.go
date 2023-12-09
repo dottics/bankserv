@@ -53,6 +53,48 @@ func (s *Service) GetCategoryItems(entityUUID uuid.UUID, category, from, to stri
 	return res.Data, nil
 }
 
+// UpdateItemsCategory updates the category of all the items that have a
+// category which match the 'replace' category and are replaced with the 'with'
+// category for all items related to that entity.
+func (s *Service) UpdateItemsCategory(mc MapCategory) (Items, dutil.Error) {
+	// set path
+	s.URL.Path = "/map/item-category"
+	// marshal payload
+	p, e := dutil.MarshalReader(mc)
+	if e != nil {
+		return Items{}, e
+	}
+
+	// do request
+	r, e := s.DoRequest("PUT", s.URL, nil, nil, p)
+	if e != nil {
+		return Items{}, e
+	}
+
+	type Data struct {
+		Items `json:"items"`
+	}
+	res := struct {
+		Data   `json:"data"`
+		Errors dutil.Errors `json:"errors"`
+	}{}
+	// decode response
+	_, e = msp.Decode(r, &res)
+	if e != nil {
+		return Items{}, e
+	}
+
+	if r.StatusCode != 200 {
+		e := &dutil.Err{
+			Status: r.StatusCode,
+			Errors: res.Errors,
+		}
+		return Items{}, e
+	}
+
+	return res.Data.Items, nil
+}
+
 // CreateItem creates a new Item for a transaction based on the item data passed
 // to the function.
 func (s *Service) CreateItem(i Item) (Item, dutil.Error) {
