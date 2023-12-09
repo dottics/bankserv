@@ -166,6 +166,131 @@ func TestService_GetCategoryItem(t *testing.T) {
 	}
 }
 
+func TestService_UpdateItemsCategory(t *testing.T) {
+	tests := []struct {
+		name     string
+		mc       MapCategory
+		exchange *microtest.Exchange
+		items    Items
+		e        dutil.Error
+	}{
+		{
+			name: "permission required",
+			mc: MapCategory{
+				EntityUUID: uuid.MustParse("8a6b6251-94b7-4593-8c27-9a50258cfc19"),
+				Replace:    "food",
+				With:       "groceries",
+			},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 403,
+					Body:   `{"message":"Forbidden: Unable to process request","data":{},"errors":{"permission":["Please ensure you have permission"]}}`,
+				},
+			},
+			items: Items{},
+			e: &dutil.Err{
+				Status: 403,
+				Errors: map[string][]string{
+					"permission": {"Please ensure you have permission"},
+				},
+			},
+		},
+		{
+			name: "items not found",
+			mc: MapCategory{
+				EntityUUID: uuid.MustParse("8a6b6251-94b7-4593-8c27-9a50258cfc19"),
+				Replace:    "food",
+				With:       "groceries",
+			},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 404,
+					Body: `{
+						"message":"no items found",
+						"data": {},
+						"errors": {"item": ["not found"]}
+					}`,
+				},
+			},
+			items: Items{},
+			e: &dutil.Err{
+				Status: 404,
+				Errors: map[string][]string{
+					"item": {"not found"},
+				},
+			},
+		},
+		{
+			name: "items updated",
+			mc: MapCategory{
+				EntityUUID: uuid.MustParse("8a6b6251-94b7-4593-8c27-9a50258cfc19"),
+				Replace:    "food",
+				With:       "groceries",
+			},
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 200,
+					Body: `{
+						"message":"items updated",
+						"data":{
+							"items": [
+								{
+									"uuid":"d2b64e51-8b31-4cbd-be90-439ddb33c3b7",
+									"description":"item one",
+									"sku":"barcode-here",
+									"unit":"each",
+									"quantity":21.1,
+									"amount":12.3,
+									"discount":1.23,
+									"category":"groceries",
+									"prediction_category":"groceries",
+									"active":true
+								}
+							]
+						}
+					}`,
+				},
+			},
+			items: Items{
+				{
+					UUID:               uuid.MustParse("d2b64e51-8b31-4cbd-be90-439ddb33c3b7"),
+					Description:        "item one",
+					SKU:                "barcode-here",
+					Unit:               "each",
+					Quantity:           21.1,
+					Amount:             12.3,
+					Discount:           1.23,
+					Category:           "groceries",
+					PredictionCategory: "groceries",
+					Active:             true,
+				},
+			},
+			e: nil,
+		},
+	}
+
+	s := NewService(Config{})
+	ms := microtest.MockServer(s)
+	defer ms.Server.Close()
+
+	for i, tc := range tests {
+		name := fmt.Sprintf("%d %s", i, tc.name)
+		t.Run(name, func(t *testing.T) {
+			ms.Append(tc.exchange)
+
+			it, e := s.UpdateItemsCategory(tc.mc)
+			if !dutil.ErrorEqual(tc.e, e) {
+				t.Errorf("expected error %v got %v", tc.e, e)
+			}
+			for i, it := range it {
+				if !EqualItem(tc.items[i], it) {
+					t.Errorf("expected item\n%v\ngot\n%v", tc.items[i], it)
+				}
+			}
+		})
+	}
+}
+
 func TestService_CreateItem(t *testing.T) {
 	tt := []struct {
 		name     string
