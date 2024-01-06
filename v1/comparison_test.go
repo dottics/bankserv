@@ -749,6 +749,30 @@ func TestEqualTransaction(t *testing.T) {
 			o: false,
 		},
 		{
+			name: "different IsBudget",
+			a: Transaction{
+				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
+				Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
+				Debit:       true,
+				Credit:      false,
+				Amount:      325.99,
+				IsBudget:    true,
+			},
+			b: Transaction{
+				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),
+				AccountUUID: uuid.MustParse("032203af-6002-4abc-9982-73c577add8df"),
+				Date:        timeMustParse("2022-06-18T15:26:22.000Z"),
+				Description: "GOOGLE *GOOGLE STORAGEG.CO/HELPPAY#GB",
+				Debit:       true,
+				Credit:      false,
+				Amount:      325.99,
+				IsBudget:    false,
+			},
+			o: false,
+		},
+		{
 			name: "different Active",
 			a: Transaction{
 				UUID:        uuid.MustParse("d25ac3b1-0a8f-43a3-8da1-d2f22a814a82"),

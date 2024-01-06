@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.12.0] - 2024-01-06
+
+### Added
+
+- The `IsBudget` field to the `Account` type. The field indicates if the account
+  should be included in the budget (cashflow) or not.
+- The `IsBudget` field to the `Transaction` type, which indicates if the
+  transaction's account in the budget (cashflow) or not.
+
 ## [1.11.0] - 2023-12-09
 
 ### Added
