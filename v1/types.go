@@ -114,7 +114,7 @@ type UpdateAccount struct {
 	Name              string    `json:"name,omitempty"`
 	Alias             string    `json:"alias,omitempty"`
 	Number            string    `json:"number,omitempty"`
-	IsBudget          bool      `json:"is_budget"`
+	IsBudget          bool      `json:"is_budget,omitempty"`
 	IntegrationStatus string    `json:"integration_status,omitempty"`
 	Active            bool      `json:"active"`
 }
