@@ -113,6 +113,9 @@ func EqualTransaction(a, b Transaction) bool {
 	if a.Amount != b.Amount {
 		return false
 	}
+	if a.IsBudget != b.IsBudget {
+		return false
+	}
 	if a.Active != b.Active {
 		return false
 	}

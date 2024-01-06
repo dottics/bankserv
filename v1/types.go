@@ -57,6 +57,7 @@ type Transaction struct {
 	Debit        bool      `json:"debit"`
 	Credit       bool      `json:"credit"`
 	Amount       float32   `json:"amount"`
+	IsBudget     bool      `json:"is_budget"`
 	Items        []Item    `json:"items"`
 	Active       bool      `json:"active"`
 	CreateDate   time.Time `json:"create_date"`
@@ -76,6 +77,7 @@ type Account struct {
 	Alias             string         `json:"alias"`
 	Number            string         `json:"number"`
 	IntegrationStatus string         `json:"integration_status"`
+	IsBudget          bool           `json:"is_budget"`
 	Balance           AccountBalance `json:"balance"`
 	Active            bool           `json:"active"`
 	CreateDate        time.Time      `json:"create_date"`
@@ -112,6 +114,7 @@ type UpdateAccount struct {
 	Name              string    `json:"name,omitempty"`
 	Alias             string    `json:"alias,omitempty"`
 	Number            string    `json:"number,omitempty"`
+	IsBudget          bool      `json:"is_budget,omitempty"`
 	IntegrationStatus string    `json:"integration_status,omitempty"`
 	Active            bool      `json:"active"`
 }
