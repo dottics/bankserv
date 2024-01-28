@@ -8,11 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.12.1] - 2024-01-28
 
-### Updated
+### Added
 
-- Updated the `GetEntityAccounts` method updated to allow for additional query
-  parameters to be passed to the bank-service.
-  - Which includes `first=ture` to return only the first account for the entity.
+- The `GetAccount` method to get a single account's information.
 
 ## [1.12.0] - 2024-01-06
 
