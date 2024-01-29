@@ -7,6 +7,44 @@ import (
 	"net/url"
 )
 
+// GetAccount gets a specific bank account based on the bank account's UUID
+func (s *Service) GetAccount(UUID uuid.UUID) (Account, dutil.Error) {
+	// set path
+	s.URL.Path = "/account/-"
+	// add query string
+	qs := url.Values{"uuid": {UUID.String()}}
+	// do request
+	r, e := s.DoRequest("GET", s.URL, qs, nil, nil)
+	if e != nil {
+		return Account{}, e
+	}
+
+	// response structure
+	type Data struct {
+		Account `json:"account"`
+	}
+	res := struct {
+		Data   `json:"data"`
+		Errors map[string][]string `json:"errors"`
+	}{}
+
+	// decode the response
+	_, e = msp.Decode(r, &res)
+	if e != nil {
+		return Account{}, e
+	}
+
+	if r.StatusCode != 200 {
+		e := &dutil.Err{
+			Status: r.StatusCode,
+			Errors: res.Errors,
+		}
+		return Account{}, e
+	}
+	// return bank accounts on successful
+	return res.Data.Account, nil
+}
+
 // GetEntityAccounts gets all the accounts for a specific entity. An entity
 // represents any user, organisation or group. Based on the UUID passed the
 // function returns the Accounts. If an error occurs such as the UUID is invalid
